@@ -2243,6 +2243,27 @@ img { max-width: 100%; }
   transform: translateX(-50%) translateY(0);
 }
 
+/* Offline indicator */
+.offline-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #b44;
+  color: #fff;
+  text-align: center;
+  padding: 0.45rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  z-index: 30000;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+.offline-banner.visible {
+  transform: translateY(0);
+}
+
 /* ============================================
    #7 Trip Stats Dashboard
    ============================================ */
@@ -2546,7 +2567,7 @@ img { max-width: 100%; }
 
 .bestof-item-top {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.4rem;
   flex-wrap: wrap;
 }
@@ -3810,6 +3831,29 @@ img { max-width: 100%; }
   }
 
   /* ==========================================
+     CONNECTION STATE
+     ========================================== */
+  (function initConnectionState() {
+    if (!firebaseReady) return;
+    var banner = document.createElement('div');
+    banner.className = 'offline-banner';
+    banner.textContent = 'You\u2019re offline \u2014 changes won\u2019t sync until you reconnect';
+    document.body.appendChild(banner);
+
+    var wasConnected = true;
+    db.ref('.info/connected').on('value', function(snap) {
+      var connected = snap.val() === true;
+      if (!connected && wasConnected) {
+        banner.classList.add('visible');
+      } else if (connected) {
+        banner.classList.remove('visible');
+        if (!wasConnected) showToast('Back online \u2014 all synced!');
+      }
+      wasConnected = connected;
+    });
+  })();
+
+  /* ==========================================
      USER IDENTITY
      ========================================== */
   var currentUser = null;
@@ -4659,8 +4703,19 @@ img { max-width: 100%; }
             // Claimed → done
             userRef.set('done');
           } else if (!slot.classList.contains('claimed')) {
-            // Unclaimed → claim
-            userRef.set('claimed');
+            // Unclaimed → claim (transaction prevents race condition)
+            checkRef.transaction(function(current) {
+              if (current === null) {
+                var obj = {};
+                obj[currentUser.userId] = 'claimed';
+                return obj;
+              }
+              return undefined; // abort — someone else claimed it
+            }, function(error, committed) {
+              if (!committed && !error) {
+                showToast('Someone just claimed that!');
+              }
+            });
           }
         });
       });
@@ -4904,6 +4959,7 @@ img { max-width: 100%; }
           // Update count label
           var countLabel = toggle.querySelector('.comment-count-label');
           countLabel.textContent = comments.length + ' comment' + (comments.length !== 1 ? 's' : '');
+          checkCommentEmpty();
 
           // Render comments
           commentsList.innerHTML = '';
@@ -4926,7 +4982,8 @@ img { max-width: 100%; }
 
             var name = document.createElement('span');
             name.className = 'comment-name';
-            name.textContent = c.name || 'Unknown';
+            var liveUser = allUsers[c.userId];
+            name.textContent = liveUser ? (liveUser.firstName + ' ' + liveUser.lastName) : (c.name || 'Unknown');
 
             var time = document.createElement('span');
             time.className = 'comment-time';
@@ -5085,7 +5142,8 @@ img { max-width: 100%; }
 
             var author = document.createElement('span');
             author.className = 'note-author';
-            author.textContent = n.name || 'Unknown';
+            var liveNoteUser = allUsers[n.userId];
+            author.textContent = liveNoteUser ? (liveNoteUser.firstName + ' ' + liveNoteUser.lastName) : (n.name || 'Unknown');
 
             var text = document.createElement('span');
             text.className = 'note-text';
@@ -5111,6 +5169,7 @@ img { max-width: 100%; }
 
             notesList.appendChild(entry);
           });
+          checkNotesEmpty();
         });
       }
     });
@@ -5267,7 +5326,7 @@ img { max-width: 100%; }
       var users = snap.val() || {};
       var count = Object.keys(users).length;
       var el = document.getElementById('dashTravelers');
-      if (el) el.textContent = count + '/5';
+      if (el) el.textContent = count;
     });
 
     // Reactions count
@@ -5317,60 +5376,43 @@ img { max-width: 100%; }
   })();
 
   /* ==========================================
-     #9 FUN EMPTY STATES
+     #9 FUN EMPTY STATES (called from Firebase callbacks)
      ========================================== */
-  (function initEmptyStates() {
-    // Override the comment count label rendering to show fun messages
-    // Patch the existing comment listener by watching for 0-comment state
-    var emptyMessages = {
-      comments: 'No comments yet \u2014 be the first to weigh in!',
-      notes: 'No notes yet \u2014 what are you thinking?',
-      votes: 'Be the first to vote!'
-    };
+  var emptyMessages = {
+    comments: 'No comments yet \u2014 be the first to weigh in!',
+    notes: 'No notes yet \u2014 what are you thinking?'
+  };
 
-    // For comments: observe the comment count labels
-    function checkCommentEmpty() {
-      document.querySelectorAll('.comment-count-label').forEach(function(label) {
-        if (label.textContent === '0 comments') {
-          label.textContent = emptyMessages.comments;
-          label.style.fontStyle = 'italic';
-          label.style.color = 'var(--text-light)';
-        } else {
-          label.style.fontStyle = '';
-          label.style.color = '';
-        }
-      });
-    }
+  function checkCommentEmpty() {
+    document.querySelectorAll('.comment-count-label').forEach(function(label) {
+      if (label.textContent === '0 comments') {
+        label.textContent = emptyMessages.comments;
+        label.style.fontStyle = 'italic';
+        label.style.color = 'var(--text-light)';
+      } else {
+        label.style.fontStyle = '';
+        label.style.color = '';
+      }
+    });
+  }
 
-    // For notes: observe note lists
-    function checkNotesEmpty() {
-      document.querySelectorAll('.notes-row .notes-list').forEach(function(list) {
-        if (list.children.length === 0 && !list.querySelector('.empty-state-msg')) {
-          var msg = document.createElement('div');
-          msg.className = 'empty-state-msg';
-          msg.textContent = emptyMessages.notes;
-          list.appendChild(msg);
-        }
-        // Remove empty state when notes exist
-        var emptyMsg = list.querySelector('.empty-state-msg');
-        if (emptyMsg && list.querySelectorAll('.note-entry').length > 0) {
-          emptyMsg.remove();
-        }
-      });
-    }
+  function checkNotesEmpty() {
+    document.querySelectorAll('.notes-row .notes-list').forEach(function(list) {
+      if (list.children.length === 0 && !list.querySelector('.empty-state-msg')) {
+        var msg = document.createElement('div');
+        msg.className = 'empty-state-msg';
+        msg.textContent = emptyMessages.notes;
+        list.appendChild(msg);
+      }
+      var emptyMsg = list.querySelector('.empty-state-msg');
+      if (emptyMsg && list.querySelectorAll('.note-entry').length > 0) {
+        emptyMsg.remove();
+      }
+    });
+  }
 
-    // Run periodically to catch Firebase updates
-    setInterval(function() {
-      checkCommentEmpty();
-      checkNotesEmpty();
-    }, 1000);
-
-    // Initial run
-    setTimeout(function() {
-      checkCommentEmpty();
-      checkNotesEmpty();
-    }, 1500);
-  })();
+  // Initial empty state check (covers no-Firebase fallback)
+  setTimeout(function() { checkCommentEmpty(); checkNotesEmpty(); }, 1500);
 
   /* ==========================================
      FIREBASE LISTENER CLEANUP
