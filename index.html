@@ -1,0 +1,5388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stoweaways 2026 — Stowe &amp; Montreal</title>
+<meta name="description" content="A 9-day trip for 7 — mountains, swimming holes, floating spas, and the best food city in North America.">
+<meta property="og:title" content="Stoweaways 2026 — Stowe & Montreal">
+<meta property="og:description" content="A 9-day trip for 7. Mountains, swimming holes, floating spas, and the best food city in North America.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://alexpriest.github.io/stoweaways">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+  --bg: #faf7f2;
+  --primary: #1a2f23;
+  --stowe: #2d6b4a;
+  --montreal: #1a3a5c;
+  --travel: #b85c3a;
+  --spa: #8b6b4a;
+  --fly: #6b6b6b;
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-bg-solid: #ffffff;
+  --text: #2c2c2c;
+  --text-muted: #6b6b6b;
+  --text-light: #999;
+  --border: #e8e5e0;
+  --font-display: 'PP Editorial New', 'Playfair Display', Georgia, serif;
+  --font-body: 'PP Neue Montreal', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --primary-dark: #253d2d;
+  --spa-light: #c49a6c;
+  --note-stripe: #faf8f5;
+  --avatar-default: #bbb;
+  --reaction-active-bg: #fef3ee;
+  --reaction-active-border: #e8c9b8;
+  --shadow-sm: 0 2px 16px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 100px;
+
+  /* Flexoki palette */
+  --fx-red: #D14D41;
+  --fx-orange: #DA702C;
+  --fx-yellow: #D0A215;
+  --fx-green: #879A39;
+  --fx-cyan: #3AA99F;
+  --fx-blue: #4385BE;
+  --fx-purple: #8B7EC8;
+  --fx-magenta: #CE5D97;
+}
+
+/* ============================================
+   Reset & Base
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a { color: inherit; }
+img { max-width: 100%; }
+
+/* ============================================
+   Hero
+   ============================================ */
+.hero {
+  position: relative;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #f5f3ef;
+  padding: 3rem 2rem 2.5rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a2f23 0%, #1e3d2e 25%, #1a3a5c 50%, #1a2f23 75%, #2d4a3e 100%);
+  background-size: 400% 400%;
+  animation: heroGradient 20s ease infinite;
+}
+
+@keyframes heroGradient {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 25%; }
+  50% { background-position: 100% 50%; }
+  75% { background-position: 0% 75%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Grain texture overlay */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Subtle vignette */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.3) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.6;
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin-bottom: 0.3em;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.hero-subtitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-weight: 400;
+  font-style: italic;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+.hero-details {
+  font-size: 0.9rem;
+  opacity: 0.5;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  opacity: 0.4;
+  animation: floatDown 2s ease-in-out infinite;
+}
+
+.hero-scroll-hint svg {
+  width: 24px;
+  height: 24px;
+  stroke: #f5f3ef;
+  fill: none;
+  stroke-width: 2;
+}
+
+@keyframes floatDown {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ============================================
+   Overview Stats
+   ============================================ */
+.stats-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  position: relative;
+  z-index: 3;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+  font-weight: 500;
+}
+
+/* ============================================
+   Section Styles
+   ============================================ */
+.section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.section-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-light);
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.section-divider {
+  width: 40px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+  margin: 0.75rem 0 2rem;
+}
+
+/* ============================================
+   Accommodations
+   ============================================ */
+.accom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.accom-card {
+  background: var(--card-bg-solid);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.accom-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+
+.accom-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.accom-card.stowe::before { background: var(--stowe); }
+.accom-card.mtl::before { background: var(--montreal); }
+
+.accom-where {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.accom-card.stowe .accom-where { color: var(--stowe); }
+.accom-card.mtl .accom-where { color: var(--montreal); }
+
+.accom-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.accom-card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.accom-card ul {
+  list-style: none;
+  margin: 0.75rem 0;
+}
+
+.accom-card li {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  padding: 0.2rem 0 0.2rem 1.2rem;
+  position: relative;
+}
+
+.accom-card li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+.accom-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.accom-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.accom-link:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.accom-tip {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg);
+  border-radius: 8px;
+  border-left: 3px solid var(--border);
+}
+
+/* ============================================
+   Route Section (split layout)
+   ============================================ */
+.map-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem 2rem;
+}
+
+.map-container {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+
+#map {
+  height: 400px;
+  width: 100%;
+}
+
+.map-container .map-caption {
+  background: var(--card-bg-solid);
+  padding: 0.75rem 1rem;
+  font-size: 0.78rem;
+  color: var(--text-light);
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+.route-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.route-header {
+  margin: 0 0 2rem;
+}
+
+/* ============================================
+   Day Cards
+   ============================================ */
+.day-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.day-card {
+  background: var(--card-bg-solid);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  opacity: 0.15;
+  transform: translateY(15px);
+  transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+}
+
+.day-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.day-card:hover {
+  box-shadow: 0 6px 28px rgba(0,0,0,0.08);
+}
+
+/* No left border on day cards */
+.day-card::before {
+  display: none;
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.day-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.day-card[data-type="drive"] .day-badge { background: var(--travel); }
+.day-card[data-type="stowe"] .day-badge { background: var(--stowe); }
+.day-card[data-type="montreal"] .day-badge { background: var(--montreal); }
+.day-card[data-type="spa"] .day-badge { background: var(--spa); }
+.day-card[data-type="fly"] .day-badge { background: var(--fly); }
+
+.day-date {
+  font-size: 0.95rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.day-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.day-card > p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+
+.day-card ul {
+  list-style: none;
+  margin: 0.75rem 0;
+}
+
+.day-card li {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  padding: 0.35rem 0 0.35rem 1.5rem;
+  position: relative;
+  color: var(--text-muted);
+}
+
+.day-card li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+}
+
+.day-card[data-type="drive"] li::before { border-color: var(--travel); }
+.day-card[data-type="stowe"] li::before { border-color: var(--stowe); }
+.day-card[data-type="montreal"] li::before { border-color: var(--montreal); }
+.day-card[data-type="spa"] li::before { border-color: var(--spa); }
+.day-card[data-type="fly"] li::before { border-color: var(--fly); }
+
+.day-card li strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.meal-tip {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  border-left: 3px solid var(--border);
+}
+
+.meal-tip strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Ask Claude button */
+.ask-claude-row {
+  margin-top: 0.75rem;
+}
+
+.ask-claude-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-light);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-body);
+}
+
+.ask-claude-btn:hover {
+  color: var(--text);
+  border-color: #bbb;
+  background: var(--bg);
+}
+
+.ask-claude-btn .ask-claude-icon {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--primary);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  z-index: 20000;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Emoji reactions row */
+.reactions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.reaction-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  user-select: none;
+  width: 48px;
+  height: 48px;
+}
+
+.reaction-btn:hover {
+  background: var(--bg);
+  border-color: #ccc;
+}
+
+.reaction-btn.active {
+  background: var(--reaction-active-bg);
+  border-color: var(--reaction-active-border);
+}
+
+.reaction-btn .emoji {
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.reaction-btn.bounce .emoji {
+  transform: scale(1.4);
+}
+
+.reaction-btn .count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: var(--primary);
+  color: #fff;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.reaction-btn .count:empty {
+  display: none;
+}
+
+
+/* ============================================
+   Avatar Bubbles
+   ============================================ */
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: var(--font-body);
+  border: 2px solid var(--bg);
+  margin-left: -6px;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+  flex-shrink: 0;
+}
+.avatar:first-child { margin-left: 0; }
+.avatar:hover { transform: scale(1.15); z-index: 2; }
+
+.avatar-overflow {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  border: 2px solid var(--bg);
+  margin-left: -6px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.avatar-row {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   Spa Section
+   ============================================ */
+.spa-feature {
+  background: var(--card-bg-solid);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.spa-feature::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--spa), var(--spa-light));
+}
+
+.spa-feature h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--spa);
+  margin-bottom: 0.25rem;
+}
+
+.spa-tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--text-light);
+  margin-bottom: 1rem;
+}
+
+.spa-feature p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+
+.spa-feature p strong {
+  color: var(--text);
+}
+
+.spa-book-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--spa);
+  text-decoration: none;
+  margin-top: 0.5rem;
+  transition: opacity 0.2s;
+}
+
+.spa-book-link:hover { opacity: 0.7; }
+
+.spa-alt {
+  background: var(--card-bg-solid);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+  border: 1px solid var(--border);
+}
+
+.spa-alt h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+}
+
+.spa-alt .spa-tagline {
+  margin-bottom: 1rem;
+}
+
+.spa-alt p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 0.6rem;
+}
+
+.spa-alt p strong {
+  color: var(--text);
+}
+
+.spa-alt a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+
+.spa-alt a:hover {
+  border-color: var(--primary);
+}
+
+/* ============================================
+   Road Stops
+   ============================================ */
+.road-stops-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.road-leg {
+  background: var(--card-bg-solid);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+.road-leg h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.road-leg ul {
+  list-style: none;
+}
+
+.road-leg li {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.road-leg li:last-child {
+  border-bottom: none;
+}
+
+.road-leg li strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ============================================
+   Dark Section Utility
+   ============================================ */
+.dark-section {
+  background: var(--primary);
+  color: #f5f3ef;
+}
+.dark-section .section-label { color: rgba(255,255,255,0.4); }
+.dark-section .section-title { color: #f5f3ef; }
+.dark-section .section-divider { background: rgba(255,255,255,0.3); }
+
+/* ============================================
+   Voting / Weigh In Section
+   ============================================ */
+.vote-section {
+  padding: 4rem 1.5rem;
+}
+
+.vote-section .section-subtitle { color: rgba(255,255,255,0.6); }
+
+.vote-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.vote-question {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.vote-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+@media (max-width: 700px) {
+  .vote-options { grid-template-columns: 1fr; }
+}
+
+.vote-option {
+  position: relative;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.vote-option:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.vote-option.voted {
+  border-color: rgba(255,255,255,0.3);
+}
+
+.vote-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  width: 0%;
+}
+
+.vote-option-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.vote-option-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.vote-option-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.vote-option-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.6;
+  min-width: 1.5em;
+  text-align: right;
+}
+
+.vote-avatars .avatar {
+  border-color: var(--primary);
+}
+
+.custom-vote-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.custom-vote-header {
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.7;
+  margin-bottom: 0.75rem;
+}
+
+.custom-vote-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.custom-vote-input-row input {
+  flex: 1;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+}
+
+.custom-vote-input-row input::placeholder { color: rgba(255,255,255,0.3); }
+
+.custom-vote-input-row button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.custom-vote-input-row button:hover { background: rgba(255,255,255,0.25); }
+
+.custom-vote-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+@media (max-width: 700px) {
+  .custom-vote-list { grid-template-columns: 1fr; }
+}
+
+.vote-note {
+  font-size: 0.78rem;
+  opacity: 0.35;
+  margin-top: 0.5rem;
+}
+
+/* ============================================
+   Logistics — Kitchen Table Planning
+   ============================================ */
+.logistics-spread {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 700px) {
+  .logistics-spread { grid-template-columns: 1fr; }
+}
+
+/* Shared paper card base */
+.paper-card {
+  background: #fff;
+  border-radius: 3px;
+  padding: 2rem 1.75rem;
+  position: relative;
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.06),
+    0 6px 16px rgba(0,0,0,0.04),
+    0 0 0 0.5px rgba(0,0,0,0.04);
+}
+
+.paper-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Subtle rotations for "scattered on table" feel */
+.paper-card:nth-child(1) { transform: rotate(-0.4deg); }
+.paper-card:nth-child(2) { transform: rotate(0.3deg); }
+.paper-card:nth-child(3) { transform: rotate(0.5deg); }
+.paper-card:nth-child(4) { transform: rotate(-0.3deg); }
+
+.paper-card:hover {
+  transform: rotate(0deg) translateY(-2px);
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.08),
+    0 12px 28px rgba(0,0,0,0.06),
+    0 0 0 0.5px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+}
+
+/* ---- Group To-Dos (claimable) ---- */
+.paper-card.group-todos {
+  border-top: 3px solid var(--stowe);
+}
+
+.paper-card.group-todos ul { list-style: none; }
+
+.paper-card.group-todos li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px dashed rgba(0,0,0,0.06);
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.paper-card.group-todos li:last-child { border-bottom: none; }
+
+.paper-card.group-todos li .todo-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.paper-card.group-todos li.is-claimed .todo-text {
+  opacity: 0.65;
+}
+
+.paper-card.group-todos li.is-done .todo-text {
+  opacity: 0.4;
+  text-decoration: line-through;
+  text-decoration-color: rgba(0,0,0,0.15);
+}
+
+/* Claim slot — three states: unclaimed, claimed, done */
+.claim-slot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px dashed rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: transparent;
+  position: relative;
+  background: transparent;
+}
+
+/* Unclaimed hover: tint with hint */
+.claim-slot:hover {
+  border-color: var(--stowe);
+  background: rgba(45,107,74,0.06);
+}
+
+/* Claimed: faded color circle with dashed outline — indicates "in progress" */
+.claim-slot.claimed,
+.claim-slot.mine {
+  border: 2px dashed rgba(0,0,0,0.5);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0.45;
+}
+
+.claim-slot.claimed:not(.mine) {
+  cursor: default;
+}
+
+/* Mine hover: show checkmark, bump opacity to hint "click to complete" */
+.claim-slot.mine .slot-initials { display: flex; align-items: center; justify-content: center; }
+.claim-slot.mine .slot-check { display: none; align-items: center; justify-content: center; }
+.claim-slot.mine:hover .slot-initials { display: none; }
+.claim-slot.mine:hover .slot-check { display: flex; }
+.claim-slot.mine:hover { opacity: 0.8; }
+
+/* Done: full opacity, green ring — clearly complete */
+.claim-slot.done {
+  opacity: 1;
+  border: 2px solid var(--stowe);
+}
+
+.claim-slot.done:not(.mine) {
+  cursor: default;
+}
+
+/* ---- Personal Packing (checkboxes) ---- */
+.paper-card.packing {
+  border-top: 3px solid var(--montreal);
+}
+
+.paper-card.packing ul { list-style: none; }
+
+.paper-card.packing li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0;
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.5;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.paper-card.packing li:hover {
+  background: rgba(0,0,0,0.015);
+}
+
+.paper-card.packing li .pack-check {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paper-card.packing li.checked .pack-check {
+  border-color: currentColor;
+  background: currentColor;
+}
+
+.paper-card.packing li.checked .pack-check::after {
+  content: '';
+  width: 4px;
+  height: 7px;
+  border: solid #fff;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+  margin-top: -1px;
+}
+
+.paper-card.packing li .pack-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.paper-card.packing li.checked .pack-text {
+  opacity: 0.5;
+}
+
+.paper-card.packing li .pack-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.paper-card.packing li .pack-tally {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+/* ---- Good to Know (memo style) ---- */
+.paper-card.memo {
+  background: #fefcf5;
+  border-left: 3px solid var(--spa);
+}
+
+.paper-card.memo ul { list-style: none; }
+
+.paper-card.memo li {
+  padding: 0.4rem 0 0.4rem 1.2rem;
+  position: relative;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.paper-card.memo li::before {
+  content: '\2192';
+  position: absolute;
+  left: 0;
+  color: var(--spa);
+  font-size: 0.8rem;
+}
+
+/* ---- Budget (receipt style) ---- */
+.paper-card.receipt {
+  background: #fefefe;
+  font-family: var(--font-body);
+  border-top: 2px dashed rgba(0,0,0,0.1);
+  border-bottom: 2px dashed rgba(0,0,0,0.1);
+  border-radius: 2px;
+  padding: 1.75rem 1.5rem;
+}
+
+.paper-card.receipt h3 {
+  text-align: center;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.paper-card.receipt ul { list-style: none; }
+
+.paper-card.receipt li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.4rem 0;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.5;
+  border-bottom: 1px dotted rgba(0,0,0,0.08);
+}
+
+.paper-card.receipt li:last-child { border-bottom: none; }
+
+.paper-card.receipt .receipt-item { flex: 1; }
+.paper-card.receipt .receipt-price {
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: 1rem;
+  color: var(--primary);
+}
+
+/* ============================================
+   Collaborative Notes Table
+   ============================================ */
+.notes-table {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.notes-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  background: var(--card-bg-solid);
+}
+
+.notes-row:nth-child(even) {
+  background: var(--note-stripe);
+}
+
+.notes-row-date {
+  padding: 1rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.4;
+}
+
+.notes-hint {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-light);
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+
+.notes-row-content {
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.note-entry {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  position: relative;
+}
+
+.note-entry .note-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.note-entry .note-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.note-entry .note-author {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.note-entry .note-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.note-entry .note-delete-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  padding: 0 0.25rem;
+  font-family: var(--font-body);
+  line-height: 1;
+}
+
+.note-entry:hover .note-delete-btn {
+  opacity: 0.5;
+}
+
+.note-entry .note-delete-btn:hover {
+  opacity: 1;
+  color: var(--fx-red);
+}
+
+.note-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.note-input-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.4rem 0.65rem;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.note-input-row input:focus {
+  border-color: var(--stowe);
+  box-shadow: 0 0 0 3px rgba(45, 107, 74, 0.1);
+}
+
+.note-input-row button {
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.note-input-row button:hover {
+  background: var(--primary-dark);
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+.footer {
+  text-align: center;
+  padding: 3rem 2rem;
+  font-size: 0.82rem;
+  color: var(--text-light);
+  border-top: 1px solid var(--border);
+}
+
+.footer-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.3rem;
+}
+
+/* ============================================
+   Scroll Animations
+   ============================================ */
+.fade-in {
+  opacity: 0.15;
+  transform: translateY(15px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   Leaflet overrides
+   ============================================ */
+.leaflet-control-attribution { font-size: 0.65rem !important; }
+.leaflet-popup-content-wrapper { border-radius: 10px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important; }
+.leaflet-popup-content { font-family: var(--font-body) !important; font-size: 0.85rem !important; margin: 10px 14px !important; }
+
+/* ============================================
+   User Identity Modal
+   ============================================ */
+.user-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 47, 35, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.user-modal-overlay.visible {
+  opacity: 1;
+}
+
+.user-modal {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 24px;
+  padding: 2.5rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.user-modal-overlay.visible .user-modal {
+  transform: translateY(0) scale(1);
+}
+
+.user-modal h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
+.user-modal .modal-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.name-picker {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.name-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.name-option:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.name-option.selected {
+  background: rgba(26, 47, 35, 0.08);
+}
+
+.name-option-initials {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--avatar-default);
+  font-family: var(--font-body);
+  transition: all 0.2s ease;
+  border: 3px solid transparent;
+}
+
+.name-option.selected .name-option-initials {
+  border-color: var(--primary);
+  transform: scale(1.1);
+}
+
+.name-option-name {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+}
+
+.name-option.selected .name-option-name {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.user-modal .input-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  max-width: 100%;
+}
+
+.user-modal input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.user-modal input[type="text"]:focus {
+  border-color: var(--stowe);
+  box-shadow: 0 0 0 3px rgba(45, 107, 74, 0.1);
+}
+
+.user-modal input[type="text"]::placeholder {
+  color: var(--text-light);
+}
+
+.color-picker-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-light);
+  margin-bottom: 0.75rem;
+}
+
+.color-picker {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.color-swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-body);
+  position: relative;
+}
+
+.color-swatch:hover:not(.taken) {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.color-swatch.selected {
+  border-color: var(--primary);
+  transform: scale(1.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.color-swatch.taken {
+  opacity: 0.35;
+  cursor: default;
+  filter: grayscale(0.5);
+}
+
+.user-modal .submit-btn {
+  width: 100%;
+  padding: 0.85rem;
+  border: none;
+  border-radius: 12px;
+  background: var(--primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.01em;
+}
+
+.user-modal .submit-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(26, 47, 35, 0.25);
+}
+
+.user-modal .submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   User Pill (top-right)
+   ============================================ */
+.user-pill-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9000;
+}
+
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem 0.4rem 0.4rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 100px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-body);
+}
+
+.user-pill:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.user-pill .pill-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.user-pill .pill-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.user-pill-dropdown {
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  padding: 0.4rem;
+  min-width: 160px;
+  opacity: 0;
+  transform: translateY(-4px) scale(0.96);
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.user-pill-dropdown.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.user-pill-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.user-pill-dropdown button:hover {
+  background: var(--bg);
+}
+
+/* ============================================
+   Place Links (subtle underline)
+   ============================================ */
+.place-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(0,0,0,0.2);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.place-link:hover {
+  text-decoration-color: rgba(0,0,0,0.5);
+}
+
+/* ============================================
+   Per-Day Comments (always visible input)
+   ============================================ */
+.day-comments-section {
+  margin-top: 1rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+}
+
+.day-comments-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  cursor: default;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.day-comments-body {
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.day-comment {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  align-items: flex-start;
+  position: relative;
+}
+
+.day-comment .comment-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.day-comment .comment-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.day-comment .comment-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+
+.day-comment .comment-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.day-comment .comment-time {
+  font-size: 0.7rem;
+  color: var(--text-light);
+}
+
+.day-comment .comment-text {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.day-comment .comment-delete-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  font-size: 0.82rem;
+  color: var(--text-light);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  padding: 0 0.3rem;
+  font-family: var(--font-body);
+  line-height: 1;
+}
+
+.day-comment:hover .comment-delete-btn {
+  opacity: 0.4;
+}
+
+.day-comment .comment-delete-btn:hover {
+  opacity: 1;
+  color: var(--fx-red);
+}
+
+.day-comment-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.day-comment-input-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.day-comment-input-row input:focus {
+  border-color: var(--stowe);
+  box-shadow: 0 0 0 3px rgba(45, 107, 74, 0.1);
+}
+
+.day-comment-input-row button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.day-comment-input-row button:hover {
+  background: var(--primary-dark);
+}
+
+/* ============================================
+   Table of Contents Bar
+   ============================================ */
+.toc-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 247, 242, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(232, 229, 224, 0.6);
+  padding: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.toc-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.toc-bar-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.6rem 1.5rem;
+  white-space: nowrap;
+}
+
+.toc-link {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.35rem 0.7rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.toc-link:hover {
+  color: var(--text);
+  background: rgba(0,0,0,0.04);
+}
+
+.toc-link.active {
+  color: var(--primary);
+  font-weight: 600;
+  background: rgba(26, 47, 35, 0.08);
+}
+
+.toc-separator {
+  color: var(--text-light);
+  opacity: 0.3;
+  font-size: 0.7rem;
+  user-select: none;
+}
+
+/* ============================================
+   #1 Countdown Timer
+   ============================================ */
+.countdown-stat .stat-num {
+  font-size: 1.3rem;
+  line-height: 1.3;
+}
+
+.countdown-stat .countdown-big {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+  display: block;
+}
+
+.countdown-stat .countdown-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.countdown-stat .countdown-letsgo {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--stowe);
+}
+
+/* ============================================
+   #2 Scroll Progress Bar
+   ============================================ */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  z-index: 9999;
+  background: var(--stowe);
+  transition: width 0.1s linear, background 0.5s ease;
+  pointer-events: none;
+}
+
+/* ============================================
+   #4 Border Crossing Divider
+   ============================================ */
+.border-crossing-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  margin: 0.5rem 0;
+  position: relative;
+}
+
+.border-crossing-divider::before,
+.border-crossing-divider::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+.border-crossing-stamp {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.6rem;
+  padding: 0.4rem 1rem;
+  background: var(--bg);
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  line-height: 1;
+  animation: stampAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.border-crossing-stamp .stamp-arrow {
+  font-size: 1rem;
+  color: var(--text-light);
+}
+
+@keyframes stampAppear {
+  0% { transform: scale(0.5) rotate(-8deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ============================================
+   #5 Emoji Particle Burst
+   ============================================ */
+.emoji-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 30000;
+  font-size: 1.2rem;
+  animation: emojiFloat 0.9s ease-out forwards;
+}
+
+@keyframes emojiFloat {
+  0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.4) rotate(var(--rot)); }
+}
+
+/* ============================================
+   #6 Welcome Back Toast
+   ============================================ */
+.welcome-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  padding: 0.85rem 1.75rem;
+  border-radius: 14px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  z-index: 20001;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.welcome-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================
+   #7 Trip Stats Dashboard
+   ============================================ */
+.trip-dashboard {
+  padding: 4rem 1.5rem;
+}
+
+.dashboard-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.dashboard-stat {
+  text-align: center;
+  padding: 1.25rem 0.75rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  transition: background 0.2s ease;
+}
+
+.dashboard-stat:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.dashboard-stat-num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dashboard-stat-label {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  margin-top: 0.3rem;
+  font-weight: 500;
+}
+
+/* ============================================
+   #8 Stowe → Montreal Color Transition
+   ============================================ */
+.day-card[data-type="stowe"] {
+  background: linear-gradient(135deg, rgba(45, 107, 74, 0.04), rgba(255,255,255,0.95)) !important;
+}
+
+.day-card[data-type="montreal"] {
+  background: linear-gradient(135deg, rgba(26, 58, 92, 0.04), rgba(255,255,255,0.95)) !important;
+}
+
+.day-card[data-type="drive"] {
+  background: linear-gradient(135deg, rgba(184, 92, 58, 0.04), rgba(255,255,255,0.95)) !important;
+}
+
+.day-card[data-type="spa"] {
+  background: linear-gradient(135deg, rgba(139, 107, 74, 0.04), rgba(255,255,255,0.95)) !important;
+}
+
+.day-card[data-type="fly"] {
+  background: linear-gradient(135deg, rgba(107, 107, 107, 0.04), rgba(255,255,255,0.95)) !important;
+}
+
+/* ============================================
+   #9 Fun Empty States
+   ============================================ */
+.empty-state-msg {
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--text-light);
+  padding: 0.25rem 0;
+}
+
+/* ============================================
+   #10 Hover Micro-interactions
+   ============================================ */
+.day-card {
+  transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+}
+
+.day-card.visible:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.vote-option {
+  transition: all 0.3s ease, transform 0.2s ease;
+}
+
+.vote-option:hover {
+  transform: scale(1.01);
+}
+
+.name-option:hover .name-option-initials {
+  animation: wobble 0.4s ease;
+}
+
+@keyframes wobble {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+  75% { transform: rotate(-3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  #map {
+    height: 300px;
+  }
+
+  .accom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .road-stops-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .notes-row {
+    grid-template-columns: 1fr;
+  }
+
+  .notes-row-date {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1rem;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .hero {
+    min-height: 70vh;
+    padding: 3rem 1.5rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats-grid .stat-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .toc-bar-inner {
+    justify-content: flex-start;
+    padding: 0.5rem 1rem;
+  }
+
+  .toc-link {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .day-card {
+    padding: 1.25rem;
+  }
+
+  .spa-feature {
+    padding: 1.75rem;
+  }
+
+  .route-section,
+  .section {
+    padding: 2rem 1rem;
+  }
+
+  .vote-section {
+    padding: 3rem 1rem;
+  }
+
+  .user-modal {
+    padding: 2rem 1.5rem;
+  }
+
+  .user-modal .input-group {
+    flex-direction: column;
+  }
+
+  .color-swatch {
+    width: 40px;
+    height: 40px;
+  }
+
+  .user-pill .pill-name {
+    font-size: 0.72rem;
+  }
+
+  .user-pill .pill-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 0.55rem;
+  }
+
+  .user-pill {
+    padding: 0.3rem 0.7rem 0.3rem 0.3rem;
+    gap: 0.35rem;
+  }
+
+  .reaction-btn {
+    padding: 0.4rem 0.55rem;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 0.75rem;
+  }
+
+  .reaction-btn .emoji {
+    font-size: 0.9rem;
+  }
+
+  .reactions {
+    gap: 0.35rem;
+  }
+
+  .day-comment-input-row {
+    flex-direction: column;
+  }
+
+  .day-comment-input-row input,
+  .day-comment-input-row button {
+    width: 100%;
+  }
+
+  .note-input-row {
+    flex-direction: column;
+  }
+
+  .note-input-row input,
+  .note-input-row button {
+    width: 100%;
+  }
+}
+
+/* ============================================
+   Best Of
+   ============================================ */
+.bestof-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+@media (max-width: 700px) { .bestof-grid { grid-template-columns: 1fr; } }
+
+.bestof-card {
+  background: var(--card-bg-solid);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+.bestof-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.bestof-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.bestof-item:last-child { border-bottom: none; }
+
+.bestof-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.bestof-item-top {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.bestof-item a, .bestof-item .bestof-name {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: rgba(0,0,0,0.15);
+  text-underline-offset: 2px;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.bestof-item a:hover {
+  text-decoration-color: rgba(0,0,0,0.4);
+}
+
+.bestof-tag {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.bestof-tag.stowe { background: rgba(45,107,74,0.1); color: var(--stowe); }
+.bestof-tag.montreal { background: rgba(26,58,92,0.1); color: var(--montreal); }
+.bestof-tag.enroute { background: rgba(0,0,0,0.05); color: var(--text-light); }
+
+.bestof-desc {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  margin-top: 0.1rem;
+}
+
+.bestof-vote {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  margin-top: 0.15rem;
+}
+
+.bestof-vote:hover {
+  border-color: #ccc;
+  background: rgba(0,0,0,0.02);
+}
+
+.bestof-vote.voted {
+  background: var(--reaction-active-bg);
+  border-color: var(--reaction-active-border);
+  color: var(--text);
+}
+
+.bestof-vote .bestof-vote-count {
+  font-weight: 600;
+  min-width: 0.5em;
+}
+</style>
+</head>
+<body>
+
+<!-- #2 Scroll Progress Bar -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ============================================
+     USER IDENTITY MODAL (hidden by default)
+     ============================================ -->
+<div class="user-modal-overlay" id="userModal">
+  <div class="user-modal">
+    <h2>Who's joining the trip?</h2>
+    <p class="modal-subtitle">That's you, right?</p>
+    <div class="name-picker" id="namePicker">
+      <button class="name-option" data-first="Alex" data-last="Priest"><span class="name-option-initials">AP</span><span class="name-option-name">Alex</span></button>
+      <button class="name-option" data-first="Miranda" data-last="Gale"><span class="name-option-initials">MG</span><span class="name-option-name">Miranda</span></button>
+      <button class="name-option" data-first="AJ" data-last="Adams"><span class="name-option-initials">AJ</span><span class="name-option-name">AJ</span></button>
+      <button class="name-option" data-first="Ashley" data-last="Adams"><span class="name-option-initials">AA</span><span class="name-option-name">Ashley</span></button>
+      <button class="name-option" data-first="Jack" data-last="Villani"><span class="name-option-initials">JV</span><span class="name-option-name">Jack</span></button>
+    </div>
+    <input type="hidden" id="modalFirstName">
+    <input type="hidden" id="modalLastName">
+    <div class="color-picker-label">Choose your color</div>
+    <div class="color-picker" id="colorPicker"></div>
+    <button class="submit-btn" id="modalSubmit" disabled>I'm in</button>
+  </div>
+</div>
+
+<!-- ============================================
+     USER PILL (top-right, shown when signed in)
+     ============================================ -->
+<div class="user-pill-container" id="userPillContainer" style="display:none;">
+  <div class="user-pill" id="userPill">
+    <div class="pill-avatar" id="pillAvatar"></div>
+    <span class="pill-name" id="pillName"></span>
+  </div>
+  <div class="user-pill-dropdown" id="userDropdown">
+    <button id="btnChangeName">Change name</button>
+    <button id="btnSwitchColor">Switch color</button>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Itinerary</div>
+    <h1>Stoweaways 2026</h1>
+    <div class="hero-subtitle">Stowe <em>&amp;</em> Montreal. Mountains and city. Nature and food.</div>
+    <div class="hero-details">June 11&ndash;19, 2026 &middot; 7 travelers &middot; 5 adults + 2 kids (2 &amp; 4)</div>
+  </div>
+</header>
+
+<!-- ============================================
+     TABLE OF CONTENTS BAR
+     ============================================ -->
+<nav class="toc-bar" id="tocBar">
+  <div class="toc-bar-inner">
+    <a class="toc-link" data-target="stay">Stay</a>
+    <span class="toc-separator">&middot;</span>
+    <a class="toc-link" data-target="route-map">Map</a>
+    <span class="toc-separator">&middot;</span>
+    <a class="toc-link" data-target="itinerary">Itinerary</a>
+    <span class="toc-separator">&middot;</span>
+    <a class="toc-link" data-target="spa">Spa</a>
+    <span class="toc-separator">&middot;</span>
+    <a class="toc-link" data-target="road-stops">Road Stops</a>
+    <span class="toc-separator">&middot;</span>
+    <a class="toc-link" data-target="weigh-in">Weigh In</a>
+    <span class="toc-separator">&middot;</span>
+    <a class="toc-link" data-target="notes">Notes</a>
+    <span class="toc-separator">&middot;</span>
+    <a class="toc-link" data-target="logistics">Logistics</a>
+    <span class="toc-separator">&middot;</span>
+    <a class="toc-link" data-target="best-of">Best Of</a>
+    <span class="toc-separator">&middot;</span>
+    <a class="toc-link" data-target="dashboard">Dashboard</a>
+  </div>
+</nav>
+
+<!-- ============================================
+     OVERVIEW STATS
+     ============================================ -->
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-card fade-in countdown-stat" id="countdownCard">
+      <div class="stat-num" id="countdownDisplay">9 days</div>
+      <div class="stat-label">June 11 &ndash; 19</div>
+    </div>
+    <div class="stat-card fade-in">
+      <div class="stat-num">4.5 + 2.5 hrs</div>
+      <div class="stat-label">two drives</div>
+    </div>
+    <div class="stat-card fade-in">
+      <div class="stat-num">2 stays</div>
+      <div class="stat-label">house + apartment</div>
+    </div>
+    <div class="stat-card fade-in">
+      <div class="stat-num">YUL</div>
+      <div class="stat-label">fly home June 19</div>
+    </div>
+    <div class="stat-card fade-in">
+      <div class="stat-num">2 countries</div>
+      <div class="stat-label">passports required</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     WHERE TO STAY
+     ============================================ -->
+<section class="section" id="stay">
+  <div class="section-label">Accommodations</div>
+  <h2 class="section-title">Where to stay</h2>
+  <div class="section-divider"></div>
+
+  <div class="accom-grid">
+    <div class="accom-card stowe fade-in">
+      <div class="accom-where">Stowe, VT &mdash; 4 nights (June 11&ndash;15)</div>
+      <h3>Big house with a yard</h3>
+      <p>Look for a 4+ bedroom house in or near Stowe Village. Being walkable to restaurants is the key &mdash; Mountain Road or Village area, not up at the resort.</p>
+      <ul>
+        <li>4+ bedrooms, 2+ baths, sleeps 7+</li>
+        <li>Yard for kids to run around</li>
+        <li>Within walking distance of village restaurants</li>
+        <li>Firepit or porch for evening hangs</li>
+        <li>Off-season ski houses = great deals in June</li>
+        <li>Budget: ~$250&ndash;400/night for a big house</li>
+      </ul>
+      <div class="accom-tip">Look near Mountain Road or Main Street for walkability. The area around the Stowe Community Church is ideal &mdash; 10-min walk to most restaurants.</div>
+      <div class="accom-links">
+        <a class="accom-link" href="https://www.vrbo.com/search?destination=Stowe%2C+VT&startDate=2026-06-11&endDate=2026-06-15&adults=5&children=2" target="_blank" rel="noopener">Search VRBO &rarr;</a>
+        <a class="accom-link" href="https://www.airbnb.com/s/Stowe--VT/homes?checkin=2026-06-11&checkout=2026-06-15&adults=5&children=2&min_bedrooms=3" target="_blank" rel="noopener">Search Airbnb &rarr;</a>
+      </div>
+    </div>
+
+    <div class="accom-card mtl fade-in">
+      <div class="accom-where">Montreal &mdash; 4 nights (June 15&ndash;19)</div>
+      <h3>Large apartment in the Plateau</h3>
+      <p>The Plateau-Mont-Royal or Mile End neighborhoods are ideal &mdash; walkable to everything, restaurants on every block, parks nearby. Avoid downtown hotels.</p>
+      <ul>
+        <li>3-4 bedrooms, sleeps 7+</li>
+        <li>Plateau, Mile End, or Outremont neighborhoods</li>
+        <li>Near a park (Parc La Fontaine, Parc Jeanne-Mance)</li>
+        <li>Look for outdoor space &mdash; balcony, terrace, small yard</li>
+        <li>Near a metro stop for rainy days</li>
+        <li>Budget: ~$200&ndash;350/night (CAD favorable)</li>
+      </ul>
+      <div class="accom-tip">The Plateau between Parc La Fontaine and Mont-Royal is the sweet spot. Mile End (north of Laurier) is quieter with families. Avoid Old Montreal for accommodation &mdash; it's touristy and far from the best restaurants.</div>
+      <div class="accom-links">
+        <a class="accom-link" href="https://www.vrbo.com/search?destination=Le+Plateau-Mont-Royal%2C+Montreal&startDate=2026-06-15&endDate=2026-06-19&adults=5&children=2" target="_blank" rel="noopener">Search VRBO &rarr;</a>
+        <a class="accom-link" href="https://www.airbnb.com/s/Le-Plateau-Mont-Royal--Montreal/homes?checkin=2026-06-15&checkout=2026-06-19&adults=5&children=2&min_bedrooms=3" target="_blank" rel="noopener">Search Airbnb &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     THE ROUTE (Split Layout: Map + Day Cards)
+     ============================================ -->
+<!-- Map Section -->
+<div class="map-section" id="route-map">
+  <div class="map-container fade-in">
+    <div id="map"></div>
+    <div class="map-caption">White Plains → Stowe, VT (4.5 hrs) → Montreal (2.5 hrs) → fly home from YUL</div>
+  </div>
+</div>
+
+<!-- Itinerary Section -->
+<section class="route-section" id="itinerary">
+  <div class="route-header">
+    <div class="section-label">The Route</div>
+    <h2 class="section-title">Day by day</h2>
+    <div class="section-divider"></div>
+  </div>
+
+    <div class="day-cards">
+
+      <!-- Day 1: Drive -->
+      <div class="day-card" data-type="drive" data-day="1" data-lat="42.75" data-lng="-73.2" data-zoom="7" id="day1">
+        <div class="day-header">
+          <span class="day-date">Thursday, June 11</span>
+          <span class="day-badge">Travel day</span>
+        </div>
+        <h3>White Plains &rarr; Stowe (4.5 hrs)</h3>
+        <p>Leave by 8-9am to arrive before the afternoon nap meltdown. The drive is mostly I-87 north through the Hudson Valley, then cuts east into Vermont on Route 89.</p>
+        <ul>
+          <li><strong>Stop 1: Saratoga Springs, NY (~2 hrs in)</strong> &mdash; Stretch legs at Congress Park, grab lunch at <a href="https://www.hattiesrestaurant.com" target="_blank" rel="noopener" class="place-link">Hattie's</a> (Southern comfort food, kid-friendly) or <a href="https://uncommongrounds.com" target="_blank" rel="noopener" class="place-link">Uncommon Grounds</a> coffee</li>
+          <li><strong>Stop 2: Waterbury, VT (~4 hrs in, 15 min from Stowe)</strong> &mdash; <a href="https://coldhollow.com" target="_blank" rel="noopener" class="place-link">Cold Hollow Cider Mill</a> for cider donuts. Save <a href="https://www.benjerry.com/stowe" target="_blank" rel="noopener" class="place-link">Ben &amp; Jerry's</a> for Day 3.</li>
+          <li>Arrive Stowe ~1-2pm. Unpack, explore the village, early dinner.</li>
+        </ul>
+        <div class="meal-tip"><strong>First dinner:</strong> <a href="https://www.benchvt.com" target="_blank" rel="noopener" class="place-link">The Bench</a> (wood-fired pizza, relaxed, kid-friendly) or <a href="https://www.docponds.com" target="_blank" rel="noopener" class="place-link">Doc Ponds</a> (pub food, great cocktails) &mdash; both walkable, no reservation needed</div>
+        <div class="reactions" data-key="day1"></div>
+      </div>
+
+      <!-- Day 2: Stowe -->
+      <div class="day-card" data-type="stowe" data-day="2" data-lat="44.465" data-lng="-72.687" data-zoom="12" id="day2">
+        <div class="day-header">
+          <span class="day-date">Friday, June 12</span>
+          <span class="day-badge">Stowe</span>
+        </div>
+        <h3>Settle in &mdash; Rec Path + village day</h3>
+        <p>No agenda. Let the kids set the pace. This is your decompression day.</p>
+        <ul>
+          <li><strong>Coffee:</strong> Grab coffee at the village before hitting the path &mdash; <a href="https://www.blackcapcoffeeandbeer.com" target="_blank" rel="noopener" class="place-link">Black Cap Coffee &amp; Beer</a> on Main Street or Harvest Market for a quick grab-and-go.</li>
+          <li><strong>Morning:</strong> <a href="https://www.stowe.com/explore-the-resort/during-your-stay/recreation-path.aspx" target="_blank" rel="noopener" class="place-link">Stowe Recreation Path</a> &mdash; put the 2yo in the stroller, let the 4yo scooter. 5.3 miles paved along the West Branch river. Go as far as you want and turn back.</li>
+          <li><strong>Afternoon:</strong> Explore the village. <a href="https://www.stowegolfpark.com" target="_blank" rel="noopener" class="place-link">Stowe Golf Park</a> (mini golf) or just wander. Find the covered bridge on the Rec Path.</li>
+          <li><strong>If it's warm:</strong> Wade in the river at one of the Rec Path access points. The water is cold but the kids won't care.</li>
+        </ul>
+        <div class="meal-tip"><strong>Dinner:</strong> <a href="https://www.harrisonsstowe.com" target="_blank" rel="noopener" class="place-link">Harrison's</a> &mdash; American fare, wood beams, cozy. Walk there and back. Book a table.</div>
+        <div class="reactions" data-key="day2"></div>
+      </div>
+
+      <!-- Day 3: Stowe -->
+      <div class="day-card" data-type="stowe" data-day="3" data-lat="44.51" data-lng="-72.76" data-zoom="11" id="day3">
+        <div class="day-header">
+          <span class="day-date">Saturday, June 13</span>
+          <span class="day-badge">Stowe</span>
+        </div>
+        <h3>Waterfall + swimming holes</h3>
+        <ul>
+          <li><strong>Morning:</strong> <a href="https://vtstateparks.com/moss-glen-stowe.html" target="_blank" rel="noopener" class="place-link">Moss Glen Falls</a> (10 min drive) &mdash; easy 10-minute walk to a beautiful waterfall. The 4yo can hike it, carry the 2yo. Swimming below the falls if it's warm enough.</li>
+          <li><strong>Midday:</strong> <a href="https://www.alltrails.com/trail/us/vermont/bingham-falls" target="_blank" rel="noopener" class="place-link">Bingham Falls</a> (near <a href="https://vtstateparks.com/smugglers-notch.html" target="_blank" rel="noopener" class="place-link">Smugglers' Notch</a>) &mdash; quarter-mile hike to falls + swimming holes upstream. More adventurous. Optional.</li>
+          <li><strong>Afternoon:</strong> <a href="https://www.benjerry.com/stowe" target="_blank" rel="noopener" class="place-link">Ben &amp; Jerry's</a> factory (15 min in Waterbury). 30-minute tour, ice cream at the end. Hit <a href="https://coldhollow.com" target="_blank" rel="noopener" class="place-link">Cold Hollow Cider Mill</a> next door for donuts if you didn't on Day 1.</li>
+        </ul>
+        <div class="meal-tip"><strong>Dinner:</strong> <a href="https://henofthewood.com" target="_blank" rel="noopener" class="place-link">Hen of the Wood</a> (Waterbury, 15 min) &mdash; the best meal of the Stowe leg. Farm-to-table, changes daily. <strong>Book ahead.</strong> Get a sitter &mdash; this is an adults-only dinner.</div>
+        <div class="reactions" data-key="day3"></div>
+      </div>
+
+      <!-- Day 4: Stowe -->
+      <div class="day-card" data-type="stowe" data-day="4" data-lat="44.55" data-lng="-72.6" data-zoom="10" id="day4">
+        <div class="day-header">
+          <span class="day-date">Sunday, June 14</span>
+          <span class="day-badge">Stowe</span>
+        </div>
+        <h3>Lake Elmore beach day + Smugglers' Notch</h3>
+        <ul>
+          <li><strong>Morning:</strong> Drive to <a href="https://vtstateparks.com/smugglers-notch.html" target="_blank" rel="noopener" class="place-link">Smugglers' Notch</a> (20 min) &mdash; dramatic narrow pass through the mountains. Stop to scramble on the giant boulders. The 4yo will be in heaven. Keep the 2yo close.</li>
+          <li><strong>Afternoon:</strong> <a href="https://vtstateparks.com/elmore.html" target="_blank" rel="noopener" class="place-link">Lake Elmore State Park</a> (25 min from Stowe) &mdash; sandy beach, roped swimming area, lifeguards. Pack a cooler and towels. This is the "beach day" of the trip &mdash; calm lake water, warm-ish by mid-June, perfect for toddlers.</li>
+          <li><strong>Evening:</strong> Back to Stowe. Last firepit night. Rec Path sunset walk.</li>
+        </ul>
+        <div class="meal-tip"><strong>Dinner:</strong> <a href="https://www.platestowe.com" target="_blank" rel="noopener" class="place-link">Plate</a> (small plates, natural wine, intimate) or <a href="https://www.docponds.com" target="_blank" rel="noopener" class="place-link">Doc Ponds</a> if you want something casual. Get a sitter, grab cocktails at <a href="https://www.apresstowe.com" target="_blank" rel="noopener" class="place-link">Apr&egrave;s</a> after.</div>
+        <div class="reactions" data-key="day4"></div>
+      </div>
+
+      <!-- #4 Border Crossing Divider -->
+      <div class="border-crossing-divider fade-in">
+        <div class="border-crossing-stamp">
+          <span>&#x1F1FA;&#x1F1F8;</span>
+          <span class="stamp-arrow">&rarr;</span>
+          <span>&#x1F1E8;&#x1F1E6;</span>
+        </div>
+      </div>
+
+      <!-- Day 5: Drive -->
+      <div class="day-card" data-type="drive" data-day="5" data-lat="44.9" data-lng="-73.0" data-zoom="8" id="day5">
+        <div class="day-header">
+          <span class="day-date">Monday, June 15</span>
+          <span class="day-badge">Travel day</span>
+        </div>
+        <h3>Stowe &rarr; Montreal (2.5 hrs)</h3>
+        <p>Easy drive north. No rush &mdash; check out by 11, arrive Montreal by 2pm.</p>
+        <ul>
+          <li><strong>Route:</strong> North on Route 100 to I-89, then I-89 to the border at Highgate Springs / Saint-Armand. Quick border crossing on a Monday (usually 15-20 min).</li>
+          <li><strong>Optional stop: Burlington (45 min from Stowe)</strong> &mdash; Church Street pedestrian mall, Lake Champlain waterfront. Worth 60-90 min if the kids need to burn energy before the border.</li>
+          <li><strong>Border tip:</strong> Have all 7 passports handy (including kids). Declare any food you're bringing. They'll ask where you're staying and how long.</li>
+          <li><strong>Arrive Montreal ~2-3pm.</strong> Settle into the apartment. Walk the neighborhood.</li>
+        </ul>
+        <div class="meal-tip"><strong>First Montreal meal:</strong> Walk to <a href="https://www.stviateurbagel.com" target="_blank" rel="noopener" class="place-link">St-Viateur Bagels</a> (Mile End) &mdash; watch them come out of the wood-fired oven. Grab a dozen. Then wander to <a href="https://www.google.com/maps/search/Parc+La+Fontaine+Montreal" target="_blank" rel="noopener" class="place-link">Parc La Fontaine</a> or Parc Jeanne-Mance and let the kids run.</div>
+        <div class="reactions" data-key="day5"></div>
+      </div>
+
+      <!-- Day 6: Montreal -->
+      <div class="day-card" data-type="montreal" data-day="6" data-lat="45.505" data-lng="-73.555" data-zoom="13" id="day6">
+        <div class="day-header">
+          <span class="day-date">Tuesday, June 16</span>
+          <span class="day-badge">Montreal</span>
+        </div>
+        <h3>Old Montreal + Old Port</h3>
+        <ul>
+          <li><strong>Morning:</strong> Walk the cobblestones of Old Montreal. <a href="https://www.basiliquenotredame.ca/en" target="_blank" rel="noopener" class="place-link">Notre-Dame Basilica</a> (stunning interior, the 4yo will be awed by the blue light). Place d'Armes square.</li>
+          <li><strong>Midday:</strong> <a href="https://www.oldportofmontreal.com" target="_blank" rel="noopener" class="place-link">Old Port</a> waterfront &mdash; splash pad (free!), carousel, harborside walk. The 2yo will be happy here for hours.</li>
+          <li><strong>Afternoon:</strong> Clock Tower Beach area or boat tour of the harbor.</li>
+        </ul>
+        <div class="meal-tip"><strong>Lunch:</strong> <a href="https://www.oliveetgourmando.com" target="_blank" rel="noopener" class="place-link">Olive et Gourmando</a> (Old Montreal, legendary sandwiches).<br><br><strong>Dinner:</strong> <a href="https://www.schwartzsdeli.com" target="_blank" rel="noopener" class="place-link">Schwartz's Deli</a> &mdash; smoked meat sandwiches since 1928. Cash only, line out the door, worth it. Kids love it (it's basically a diner).</div>
+        <div class="reactions" data-key="day6"></div>
+      </div>
+
+      <!-- Day 7: Spa day -->
+      <div class="day-card" data-type="spa" data-day="7" data-lat="45.53" data-lng="-73.56" data-zoom="12" id="day7">
+        <div class="day-header">
+          <span class="day-date">Wednesday, June 17</span>
+          <span class="day-badge">Spa day</span>
+        </div>
+        <h3>Biodome + Bota Bota spa</h3>
+        <p>Get a sitter for the afternoon and evening. Everyone does the Biodome in the morning, then the adults hit the spa while the sitter has the kids.</p>
+        <ul>
+          <li><strong>Morning (everyone):</strong> <a href="https://espacepourlavie.ca/en/biodome" target="_blank" rel="noopener" class="place-link">Biodome</a> &mdash; four ecosystems under one roof. Penguins, rainforest, lynx, fish. Half-day minimum. The 4yo will be obsessed. The 2yo will love the penguins.</li>
+          <li><strong>Afternoon:</strong> Sitter takes kids to Parc Maisonneuve. Adults go to Bota Bota spa.</li>
+        </ul>
+        <div class="meal-tip"><strong>Dinner:</strong> <a href="https://www.monlapin.ca" target="_blank" rel="noopener" class="place-link">Mon Lapin</a> (Little Italy, French-Italian, natural wine) &mdash; book ahead. Or <a href="https://www.joebeef.ca" target="_blank" rel="noopener" class="place-link">Joe Beef</a> if you can get a table. Sitter with the kids.</div>
+        <div class="reactions" data-key="day7"></div>
+      </div>
+
+      <!-- Day 8: Montreal -->
+      <div class="day-card" data-type="montreal" data-day="8" data-lat="45.525" data-lng="-73.585" data-zoom="13" id="day8">
+        <div class="day-header">
+          <span class="day-date">Thursday, June 18</span>
+          <span class="day-badge">Montreal</span>
+        </div>
+        <h3>Market + mountain + last night out</h3>
+        <ul>
+          <li><strong>Morning:</strong> <a href="https://www.marchespublics-mtl.com/en/marches/jean-talon-market/" target="_blank" rel="noopener" class="place-link">Jean-Talon Market</a> &mdash; the best outdoor market in North America. Cheese, pastries, fruit, flowers, prepared food. Let the 4yo pick lunch. The 2yo eats samples.</li>
+          <li><strong>Afternoon:</strong> <a href="https://www.lemontroyal.qc.ca/en" target="_blank" rel="noopener" class="place-link">Mont-Royal</a> &mdash; easy walk or drive to Kondiaronk lookout for panoramic city views. Playground at Parc Jeanne-Mance on the way down. Beaver Lake if kids have energy.</li>
+          <li><strong>Evening:</strong> The big night. Sitter with the kids. Best meal of the trip.</li>
+        </ul>
+        <div class="meal-tip"><strong>Dinner:</strong> <a href="https://www.lawrencerestaurant.com" target="_blank" rel="noopener" class="place-link">Lawrence</a> (Mile End, Michelin Recommended, seasonal) or <a href="https://www.restaurantmastard.com" target="_blank" rel="noopener" class="place-link">Mastard</a> (creative, vegetable-forward).<br><br><strong>After:</strong> <a href="https://www.cloakroombar.com" target="_blank" rel="noopener" class="place-link">Cloakroom</a> (no-menu, 25 seats) or <a href="https://www.atwatercocktailclub.com" target="_blank" rel="noopener" class="place-link">Atwater Cocktail Club</a> (hidden entrance, world-class).</div>
+        <div class="reactions" data-key="day8"></div>
+      </div>
+
+      <!-- Day 9: Fly home -->
+      <div class="day-card" data-type="fly" data-day="9" data-lat="45.47" data-lng="-73.74" data-zoom="11" id="day9">
+        <div class="day-header">
+          <span class="day-date">Friday, June 19</span>
+          <span class="day-badge">Fly home</span>
+        </div>
+        <h3>Montreal &rarr; Home (YUL)</h3>
+        <ul>
+          <li>Sleep in. Slow morning. Pack up. Check out of the apartment by 11am.</li>
+          <li><strong>Last stop:</strong> <a href="https://www.fairmountbagel.com" target="_blank" rel="noopener" class="place-link">Fairmount Bagels</a> (the other legendary bagel shop, 2 min from St-Viateur) &mdash; grab a bag for the plane.</li>
+          <li><strong>YUL airport is 20 min from the Plateau.</strong> Major international hub, direct flights to most US cities.</li>
+          <li>Drop the rental car at the airport. Done.</li>
+        </ul>
+        <div class="reactions" data-key="day9"></div>
+      </div>
+
+    </div>
+</section>
+
+<!-- ============================================
+     THE SPA
+     ============================================ -->
+<section class="section" id="spa">
+  <div class="section-label">Wellness</div>
+  <h2 class="section-title">The spa</h2>
+  <div class="section-divider"></div>
+
+  <div class="spa-feature fade-in">
+    <h3>Bota Bota, spa-sur-l'eau</h3>
+    <div class="spa-tagline">A floating Nordic spa on a restored 1950s ferry in the Old Port of Montreal</div>
+    <p>Five decks of saunas, steam rooms, outdoor hot tubs, cold plunges, and relaxation areas &mdash; all on a boat on the St. Lawrence River with views of Old Montreal. The water circuit alternates hot &rarr; cold &rarr; rest, repeat. Deeply relaxing. Phones are banned (except Thursdays).</p>
+    <p><strong>Facilities:</strong> 4 saunas with river views, eucalyptus steam bath, outdoor whirlpool baths, cold plunge pools, restaurant on board, garden terrace</p>
+    <p><strong>When:</strong> Wednesday June 17 afternoon &mdash; sitter has the kids after the Biodome. Book 2-3 hours.</p>
+    <p><strong>Cost:</strong> ~$70-90 CAD per person for the water circuit. Massages additional.</p>
+    <p><strong>Location:</strong> Old Port, right on the waterfront. 15 min from the Plateau by metro or taxi.</p>
+    <a class="spa-book-link" href="https://botabota.ca/en/" target="_blank" rel="noopener">Book at botabota.ca &rarr;</a>
+  </div>
+
+  <div class="spa-alt fade-in">
+    <h3>Alternatives</h3>
+    <div class="spa-tagline">If Bota Bota is booked or you want more options</div>
+    <p><strong>Scandinave Spa Old Montreal</strong> &mdash; Indoor Nordic spa in a historic stone building. Same hot/cold/rest cycle. Enforced silence. More intimate than Bota Bota. ~$80 CAD. <a href="https://www.scandinave.com/vieux-montreal" target="_blank" rel="noopener">scandinave.com</a></p>
+    <p><strong>Strom Spa Nordique (Nuns' Island)</strong> &mdash; Outdoor Nordic spa on an island in the St. Lawrence. 20 min from downtown. Infinity pools, saunas, river views. The most dramatic setting. <a href="https://www.stromspa.com" target="_blank" rel="noopener">stromspa.com</a></p>
+    <p><strong>Spa at Topnotch (Stowe)</strong> &mdash; If you'd rather spa during the Stowe leg. 25,000 sq ft, award-winning. More of a resort spa vibe than Nordic. Good for a rainy day in Vermont. <a href="https://www.topnotchresort.com/spa" target="_blank" rel="noopener">topnotchresort.com</a></p>
+  </div>
+</section>
+
+<!-- ============================================
+     ROAD STOPS
+     ============================================ -->
+<section class="section" id="road-stops">
+  <div class="section-label">En Route</div>
+  <h2 class="section-title">Nice stops along the way</h2>
+  <div class="section-divider"></div>
+
+  <div class="road-stops-grid">
+    <div class="road-leg fade-in">
+      <h3>Leg 1: White Plains &rarr; Stowe</h3>
+      <ul>
+        <li><strong>Saratoga Springs, NY (2 hrs)</strong> &mdash; Good midpoint. Congress Park for the kids, <a href="https://www.hattiesrestaurant.com" target="_blank" rel="noopener" class="place-link">Hattie's</a> for fried chicken, or just a coffee stop at <a href="https://uncommongrounds.com" target="_blank" rel="noopener" class="place-link">Uncommon Grounds</a>.</li>
+        <li><strong>Manchester, VT (3.5 hrs via Route 7)</strong> &mdash; If you take the scenic route. Cute town, outlet shopping, Hildene (Lincoln family estate).</li>
+        <li><strong>Waterbury, VT (4 hrs)</strong> &mdash; 15 min from Stowe. <a href="https://www.benjerry.com/stowe" target="_blank" rel="noopener" class="place-link">Ben &amp; Jerry's</a>, <a href="https://coldhollow.com" target="_blank" rel="noopener" class="place-link">Cold Hollow Cider Mill</a>, <a href="https://www.cabotcheese.coop" target="_blank" rel="noopener" class="place-link">Cabot Cheese</a>. You'll come back here during the trip, so you can skip on arrival day.</li>
+      </ul>
+    </div>
+
+    <div class="road-leg fade-in">
+      <h3>Leg 2: Stowe &rarr; Montreal</h3>
+      <ul>
+        <li><strong>Burlington, VT (45 min from Stowe)</strong> &mdash; Church Street pedestrian mall, Lake Champlain waterfront, <a href="https://henofthewood.com" target="_blank" rel="noopener" class="place-link">Hen of the Wood</a>'s second location. Worth a stop if you have time.</li>
+        <li><strong>Shelburne, VT (1 hr from Stowe)</strong> &mdash; <a href="https://shelburnefarms.org" target="_blank" rel="noopener" class="place-link">Shelburne Farms</a> (working farm, walking trails, lake views) and <a href="https://shelburnemuseum.org" target="_blank" rel="noopener" class="place-link">Shelburne Museum</a> (art + Americana, outdoor campus).</li>
+        <li><strong>Border crossing at Highgate Springs / Saint-Armand</strong> &mdash; Usually the quickest crossing on this route. Avoid Champlain/Lacolle on weekends.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     WEIGH IN (Voting Section)
+     ============================================ -->
+<section class="vote-section dark-section" id="weigh-in">
+  <div class="vote-container">
+    <div class="section-label">Weigh In</div>
+    <h2 class="section-title">What are you most excited for?</h2>
+    <div class="section-divider"></div>
+
+    <div class="vote-question">Pick everything that speaks to you. Vote for as many as you want.</div>
+    <div class="vote-options" id="voteOptions">
+      <!-- Stowe activities -->
+      <div class="vote-option" data-vote="rec-path"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Morning Rec Path walks along the river</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="swimming-holes"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Swimming holes + waterfalls (Moss Glen, Bingham Falls)</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="lake-elmore"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Lake Elmore sandy beach day</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="smugglers-notch"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Scrambling giant boulders at Smugglers' Notch</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="ben-jerrys"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Ben &amp; Jerry's factory tour + tasting</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="hen-of-the-wood"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Hen of the Wood dinner (adults-only, best restaurant)</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="firepit-nights"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Firepit nights after the kids are down</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="apres-cocktails"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Craft cocktails at Apr&egrave;s (hidden inside a day spa)</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <!-- Montreal activities -->
+      <div class="vote-option" data-vote="old-montreal"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Old Montreal &mdash; cobblestones, Notre-Dame, splash pad</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="biodome"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Biodome &mdash; penguins, rainforest, four ecosystems</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="bota-bota"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Bota Bota floating spa on the St. Lawrence</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="jean-talon"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Jean-Talon Market &mdash; cheese, pastries, flowers</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="mont-royal"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Mont-Royal hike to the panoramic lookout</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="schwartz"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Schwartz's Deli smoked meat sandwich</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="bagel-tour"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">St-Viateur vs. Fairmount &mdash; the great bagel debate</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="cocktail-bars"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Cloakroom or Atwater Cocktail Club (world-class bars)</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="joe-beef"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Joe Beef dinner (if we can get a table)</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+      <div class="vote-option" data-vote="lachine-bike"><div class="vote-bar"></div><div class="vote-option-content"><span class="vote-option-label">Bike ride along the Lachine Canal</span><div class="vote-option-right"><div class="vote-avatars avatar-row"></div><span class="vote-option-count">0</span></div></div></div>
+    </div>
+
+    <div class="custom-vote-section" id="customVotes">
+      <div class="custom-vote-header">Something else? Add your own:</div>
+      <div class="custom-vote-input-row">
+        <input type="text" id="customVoteInput" placeholder="e.g. Midnight poutine run" maxlength="80">
+        <button id="customVoteSubmit">Add</button>
+      </div>
+      <div class="custom-vote-list" id="customVoteList"></div>
+    </div>
+
+    <div class="vote-note">Votes sync in real-time &mdash; everyone sees who picked what.</div>
+  </div>
+</section>
+
+<!-- ============================================
+     TRIP NOTES (Collaborative)
+     ============================================ -->
+<section class="section" id="notes">
+  <div class="section-label">Collaborative</div>
+  <h2 class="section-title">Trip Notes</h2>
+  <div class="section-divider"></div>
+
+  <div class="notes-table" id="notesTable">
+    <div class="notes-row" data-note-day="drive-1">
+      <div class="notes-row-date">Thu Jun 11<span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;display:block;margin-top:0.15rem">Drive to Stowe</span><span class="notes-hint">4.5 hr drive, Saratoga lunch stop, The Bench or Doc Ponds dinner</span></div>
+      <div class="notes-row-content">
+        <div class="notes-list"></div>
+        <div class="note-input-row">
+          <input type="text" placeholder="Add a note..." maxlength="500">
+          <button>Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="notes-row" data-note-day="stowe-1">
+      <div class="notes-row-date">Fri Jun 12<span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;display:block;margin-top:0.15rem">Rec Path + village</span><span class="notes-hint">Rec Path walk, village exploring, mini golf, Harrison's dinner</span></div>
+      <div class="notes-row-content">
+        <div class="notes-list"></div>
+        <div class="note-input-row">
+          <input type="text" placeholder="Add a note..." maxlength="500">
+          <button>Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="notes-row" data-note-day="stowe-2">
+      <div class="notes-row-date">Sat Jun 13<span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;display:block;margin-top:0.15rem">Waterfalls + swimming</span><span class="notes-hint">Moss Glen Falls, Bingham Falls, Ben &amp; Jerry's, Hen of the Wood dinner</span></div>
+      <div class="notes-row-content">
+        <div class="notes-list"></div>
+        <div class="note-input-row">
+          <input type="text" placeholder="Add a note..." maxlength="500">
+          <button>Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="notes-row" data-note-day="stowe-3">
+      <div class="notes-row-date">Sun Jun 14<span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;display:block;margin-top:0.15rem">Lake Elmore + Smugglers'</span><span class="notes-hint">Smugglers' Notch boulders, Lake Elmore beach, last firepit night, Plate dinner</span></div>
+      <div class="notes-row-content">
+        <div class="notes-list"></div>
+        <div class="note-input-row">
+          <input type="text" placeholder="Add a note..." maxlength="500">
+          <button>Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="notes-row" data-note-day="drive-2">
+      <div class="notes-row-date">Mon Jun 15<span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;display:block;margin-top:0.15rem">Drive to Montreal</span><span class="notes-hint">2.5 hr drive, optional Burlington stop, border crossing, St-Viateur bagels on arrival</span></div>
+      <div class="notes-row-content">
+        <div class="notes-list"></div>
+        <div class="note-input-row">
+          <input type="text" placeholder="Add a note..." maxlength="500">
+          <button>Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="notes-row" data-note-day="mtl-1">
+      <div class="notes-row-date">Tue Jun 16<span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;display:block;margin-top:0.15rem">Old Montreal + Old Port</span><span class="notes-hint">Cobblestones, Notre-Dame, splash pad, carousel, Olive et Gourmando, Schwartz's</span></div>
+      <div class="notes-row-content">
+        <div class="notes-list"></div>
+        <div class="note-input-row">
+          <input type="text" placeholder="Add a note..." maxlength="500">
+          <button>Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="notes-row" data-note-day="mtl-2">
+      <div class="notes-row-date">Wed Jun 17<span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;display:block;margin-top:0.15rem">Biodome + Spa</span><span class="notes-hint">Biodome AM, Bota Bota spa PM (sitter), Mon Lapin or Joe Beef dinner</span></div>
+      <div class="notes-row-content">
+        <div class="notes-list"></div>
+        <div class="note-input-row">
+          <input type="text" placeholder="Add a note..." maxlength="500">
+          <button>Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="notes-row" data-note-day="mtl-3">
+      <div class="notes-row-date">Thu Jun 18<span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;display:block;margin-top:0.15rem">Market + mountain</span><span class="notes-hint">Jean-Talon Market, Mont-Royal lookout, big night out — Lawrence or Mastard, Cloakroom</span></div>
+      <div class="notes-row-content">
+        <div class="notes-list"></div>
+        <div class="note-input-row">
+          <input type="text" placeholder="Add a note..." maxlength="500">
+          <button>Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="notes-row" data-note-day="fly-home">
+      <div class="notes-row-date">Fri Jun 19<span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;display:block;margin-top:0.15rem">Fly home</span><span class="notes-hint">Slow morning, Fairmount bagels for the plane, YUL airport 20 min away</span></div>
+      <div class="notes-row-content">
+        <div class="notes-list"></div>
+        <div class="note-input-row">
+          <input type="text" placeholder="Add a note..." maxlength="500">
+          <button>Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     LOGISTICS
+     ============================================ -->
+<section class="section" id="logistics">
+  <div class="section-label">Preparation</div>
+  <h2 class="section-title">Logistics</h2>
+  <div class="section-divider"></div>
+
+  <div class="logistics-spread fade-in">
+
+    <!-- Group To-Dos -->
+    <div class="paper-card group-todos" data-checklist="group">
+      <h3>Group To-Dos</h3>
+      <p style="font-size:0.78rem;color:var(--text-light);margin:-0.75rem 0 1rem;font-style:italic">Click the circle to claim a task. Only you can unclaim it.</p>
+      <ul>
+        <li data-item="book-stowe" data-max="1"><span class="claim-slot"></span><span class="todo-text">Book Stowe house (VRBO/Airbnb — June 11-15)</span></li>
+        <li data-item="book-montreal" data-max="1"><span class="claim-slot"></span><span class="todo-text">Book Montreal apartment (Airbnb — June 15-19)</span></li>
+        <li data-item="book-hen" data-max="1"><span class="claim-slot"></span><span class="todo-text">Book <a href="https://henofthewood.com" target="_blank" rel="noopener" class="place-link">Hen of the Wood</a> dinner (Waterbury — Sat June 13)</span></li>
+        <li data-item="book-bota" data-max="1"><span class="claim-slot"></span><span class="todo-text">Book <a href="https://botabota.ca/en/" target="_blank" rel="noopener" class="place-link">Bota Bota</a> spa (Wed June 17 afternoon)</span></li>
+        <li data-item="book-mtl-dinner" data-max="1"><span class="claim-slot"></span><span class="todo-text">Book Montreal dinner (<a href="https://www.joebeef.ca" target="_blank" rel="noopener" class="place-link">Joe Beef</a> / <a href="https://www.monlapin.ca" target="_blank" rel="noopener" class="place-link">Mon Lapin</a> / <a href="https://www.lawrencerestaurant.com" target="_blank" rel="noopener" class="place-link">Lawrence</a>)</span></li>
+        <li data-item="rent-car" data-max="1"><span class="claim-slot"></span><span class="todo-text">Rent car — minivan or large SUV for 7 + luggage</span></li>
+        <li data-item="book-sitters" data-max="1"><span class="claim-slot"></span><span class="todo-text">Book sitters for Stowe + Montreal dinner nights</span></li>
+        <li data-item="car-seats" data-max="1"><span class="claim-slot"></span><span class="todo-text">Car seats: 2 (bring your own or rent with car)</span></li>
+        <li data-item="stroller" data-max="1"><span class="claim-slot"></span><span class="todo-text">Stroller for the 2yo (Rec Path is paved)</span></li>
+        <li data-item="scooter" data-max="1"><span class="claim-slot"></span><span class="todo-text">Scooter or balance bike for the 4yo</span></li>
+        <li data-item="carrier" data-max="1"><span class="claim-slot"></span><span class="todo-text">Baby carrier/hiking backpack for waterfall hikes</span></li>
+      </ul>
+    </div>
+
+    <!-- Personal Packing -->
+    <div class="paper-card packing" data-checklist="packing">
+      <h3>Personal Packing</h3>
+      <p style="font-size:0.78rem;color:var(--text-light);margin:-0.75rem 0 1rem;font-style:italic">Check off your own items. See who else is ready.</p>
+      <ul>
+        <li data-item="passports" data-max="7"><span class="pack-check"></span><span class="pack-text">Valid passports for all 7 (including kids — check expiry dates)</span><span class="pack-meta"><span class="pack-tally"></span><span class="avatar-row"></span></span></li>
+        <li data-item="book-flights" data-max="7"><span class="pack-check"></span><span class="pack-text">Book flights home from YUL (Friday June 19)</span><span class="pack-meta"><span class="pack-tally"></span><span class="avatar-row"></span></span></li>
+        <li data-item="layers" data-max="7"><span class="pack-check"></span><span class="pack-text">Layers — Stowe mornings are 55°F, afternoons 70°F+</span><span class="pack-meta"><span class="pack-tally"></span><span class="avatar-row"></span></span></li>
+        <li data-item="swimsuits" data-max="7"><span class="pack-check"></span><span class="pack-text">Swimsuits + towels for swimming holes and Lake Elmore</span><span class="pack-meta"><span class="pack-tally"></span><span class="avatar-row"></span></span></li>
+        <li data-item="water-shoes" data-max="7"><span class="pack-check"></span><span class="pack-text">Water shoes for rocky river bottoms</span><span class="pack-meta"><span class="pack-tally"></span><span class="avatar-row"></span></span></li>
+        <li data-item="rain-jackets" data-max="7"><span class="pack-check"></span><span class="pack-text">Rain jackets (Vermont weather is unpredictable)</span><span class="pack-meta"><span class="pack-tally"></span><span class="avatar-row"></span></span></li>
+        <li data-item="sunscreen" data-max="7"><span class="pack-check"></span><span class="pack-text">Sunscreen + bug spray (early June = blackfly season in VT)</span><span class="pack-meta"><span class="pack-tally"></span><span class="avatar-row"></span></span></li>
+        <li data-item="cad-cash" data-max="7"><span class="pack-check"></span><span class="pack-text">Tap-to-pay set up (CAD cash not needed in Montreal)</span><span class="pack-meta"><span class="pack-tally"></span><span class="avatar-row"></span></span></li>
+      </ul>
+    </div>
+
+    <!-- Good to Know -->
+    <div class="paper-card memo">
+      <h3>Good to Know</h3>
+      <ul>
+        <li>Montreal is French-first. Menus, signs, greetings in French. Everyone speaks English but open with "bonjour."</li>
+        <li>Tipping in Quebec is same as US — 15-20%</li>
+        <li>Quebec uses CAD (~0.73 USD) — your dollar goes further</li>
+        <li>Blackfly season in Vermont peaks late May / early June. Bring DEET. They're annoying near water.</li>
+        <li>Lake Elmore has lifeguards but verify they're staffing by June 14</li>
+        <li>Stowe Rec Path is open year-round but can be muddy after rain in early June</li>
+        <li>Montreal Airbnb regulations exist — book licensed properties</li>
+      </ul>
+    </div>
+
+    <!-- Budget -->
+    <div class="paper-card receipt">
+      <h3>Budget Estimates</h3>
+      <ul>
+        <li><span class="receipt-item">Stowe house (4 nights)</span><span class="receipt-price">$1,000–1,600 total</span></li>
+        <li><span class="receipt-item">Montreal apartment (4 nights)</span><span class="receipt-price">$800–1,400 CAD total</span></li>
+        <li><span class="receipt-item">Rental car (9 days)</span><span class="receipt-price">$500–800 total</span></li>
+        <li><span class="receipt-item">Gas</span><span class="receipt-price">~$120 total</span></li>
+        <li><span class="receipt-item">Bota Bota spa</span><span class="receipt-price">~$70-90 CAD/person</span></li>
+        <li><span class="receipt-item">Groceries</span><span class="receipt-price">~$400-500 total</span></li>
+        <li><span class="receipt-item">Dining out</span><span class="receipt-price">~$100-150/dinner</span></li>
+        <li><span class="receipt-item">Activities</span><span class="receipt-price">~$200 total</span></li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================
+     BEST OF
+     ============================================ -->
+<section class="section" id="best-of">
+  <div class="section-label">Recommendations</div>
+  <h2 class="section-title">Best of</h2>
+  <div class="section-divider"></div>
+
+  <div class="bestof-grid fade-in">
+
+    <!-- Best Coffee -->
+    <div class="bestof-card">
+      <h3>&#9749; Best Coffee</h3>
+      <div class="bestof-item" data-bestof="black-cap-coffee">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://blackcapvermont.com" target="_blank" rel="noopener">Black Cap Coffee &amp; Beer</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Maple latte, pastries, great vibe</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="the-roastery">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.theroasterystowe.com" target="_blank" rel="noopener">The Roastery</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">In-house roasted specialty coffee</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="cafe-saint-henri">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://sainthenri.ca" target="_blank" rel="noopener">Caf&eacute; Saint-Henri</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Pioneered Montreal&rsquo;s third-wave scene</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="dispatch-coffee">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://dispatchcoffee.com" target="_blank" rel="noopener">Dispatch Coffee</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Tastings, workshops, serious about craft</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="pikolo-espresso">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.pikolo.ca" target="_blank" rel="noopener">Pikolo Espresso Bar</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Tiny, perfect, Mile End staple</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="kru-coffee">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.krucoffee.com" target="_blank" rel="noopener">Kru Coffee</a>
+            <span class="bestof-tag enroute">Saratoga</span>
+          </div>
+          <div class="bestof-desc">Great pit stop en route</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="speeder-and-earls">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.speederandearls.com" target="_blank" rel="noopener">Speeder &amp; Earl&rsquo;s</a>
+            <span class="bestof-tag stowe">Burlington</span>
+          </div>
+          <div class="bestof-desc">Burlington institution, checkerboard floors</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+    </div>
+
+    <!-- Best Restaurants -->
+    <div class="bestof-card">
+      <h3>&#127869; Best Restaurants</h3>
+      <div class="bestof-item" data-bestof="hen-of-the-wood">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://henofthewood.com" target="_blank" rel="noopener">Hen of the Wood</a>
+            <span class="bestof-tag stowe">Waterbury</span>
+          </div>
+          <div class="bestof-desc">Farm-to-table, changes daily. The best meal in Vermont.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="doc-ponds">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.docponds.com" target="_blank" rel="noopener">Doc Ponds</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Elevated pub food, great cocktails</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="plate">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.platestowe.com" target="_blank" rel="noopener">Plate</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Small plates, natural wine, intimate</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="the-bench">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.benchvt.com" target="_blank" rel="noopener">The Bench</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Wood-fired everything. Kid-friendly.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="harrisons">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.harrisonsstowe.com" target="_blank" rel="noopener">Harrison&rsquo;s</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">American fare, wood beams, cozy</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="joe-beef">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.joebeef.ca" target="_blank" rel="noopener">Joe Beef</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Legendary. Book months ahead.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="mon-lapin">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.monlapin.ca" target="_blank" rel="noopener">Mon Lapin</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">French-Italian, natural wine, same team as Joe Beef</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="lawrence">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.lawrencerestaurant.com" target="_blank" rel="noopener">Lawrence</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Michelin Recommended, Mile End</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="schwartzs-deli">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.schwartzsdeli.com" target="_blank" rel="noopener">Schwartz&rsquo;s Deli</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Smoked meat since 1928. Cash only.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="olive-et-gourmando">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.oliveetgourmando.com" target="_blank" rel="noopener">Olive et Gourmando</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Legendary sandwiches, Old Montreal</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+    </div>
+
+    <!-- Best Bars & Cocktails -->
+    <div class="bestof-card">
+      <h3>&#127864; Best Bars &amp; Cocktails</h3>
+      <div class="bestof-item" data-bestof="cloakroom">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.cloakroombar.com" target="_blank" rel="noopener">Cloakroom</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">No menu, 25 seats. Tell them what you like.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="atwater-cocktail-club">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.atwatercocktailclub.com" target="_blank" rel="noopener">Atwater Cocktail Club</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Hidden entrance, world-class. Top 50 in North America.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="le-mal-necessaire">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.google.com/maps/search/Le+Mal+Necessaire+Montreal" target="_blank" rel="noopener">Le Mal N&eacute;cessaire</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Tiki bar, Chinatown. Fun, strong drinks.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="apres-cocktails">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.apresstowe.com" target="_blank" rel="noopener">Apr&egrave;s Cocktails &amp; Wine</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Hidden inside a day spa. Craft cocktails.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="doc-ponds-bar">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.docponds.com" target="_blank" rel="noopener">Doc Ponds</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Cider Punch (rum, brandy, maple, cider)</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="the-alchemist">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://alchemistbeer.com" target="_blank" rel="noopener">The Alchemist</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Heady Topper on tap at the source</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="idletyme-brewing">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.idletymebrewing.com" target="_blank" rel="noopener">Idletyme Brewing</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Solid brewpub. Low-key beer night.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+    </div>
+
+    <!-- Best Hikes & Nature -->
+    <div class="bestof-card">
+      <h3>&#129406; Best Hikes &amp; Nature</h3>
+      <div class="bestof-item" data-bestof="stowe-rec-path">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.stowe.com/explore-the-resort/during-your-stay/recreation-path.aspx" target="_blank" rel="noopener">Stowe Recreation Path</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">5.3 mi paved, flat, along the river. Daily anchor.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="moss-glen-falls">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://vtstateparks.com/moss-glen-stowe.html" target="_blank" rel="noopener">Moss Glen Falls</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">10 min walk to waterfall. Swimming below.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="bingham-falls">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.alltrails.com/trail/us/vermont/bingham-falls" target="_blank" rel="noopener">Bingham Falls</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Quarter-mile to falls + swimming holes upstream</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="smugglers-notch">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://vtstateparks.com/smugglers-notch.html" target="_blank" rel="noopener">Smugglers&rsquo; Notch</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Dramatic pass, giant boulders to scramble</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="lake-elmore">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://vtstateparks.com/elmore.html" target="_blank" rel="noopener">Lake Elmore State Park</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Sandy beach, lifeguards, calm lake</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="mont-royal">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.lemontroyal.qc.ca/en" target="_blank" rel="noopener">Mont-Royal</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Easy hike to Kondiaronk lookout. Panoramic city views.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="lachine-canal">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.pc.gc.ca/en/lhn-nhs/qc/canallachine" target="_blank" rel="noopener">Lachine Canal</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">14 km flat paved path. Bike or walk. Ends at Atwater Market.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+    </div>
+
+    <!-- Best Kid Activities -->
+    <div class="bestof-card">
+      <h3>&#128118; Best Kid Activities</h3>
+      <div class="bestof-item" data-bestof="ben-jerrys">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.benjerry.com/stowe" target="_blank" rel="noopener">Ben &amp; Jerry&rsquo;s Factory</a>
+            <span class="bestof-tag stowe">Waterbury</span>
+          </div>
+          <div class="bestof-desc">30 min tour + ice cream. The 4yo will talk about this for months.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="stowe-golf-park">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.stowegolfpark.com" target="_blank" rel="noopener">Stowe Golf Park</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Mini golf with real hazards. Ice cream on site.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="cold-hollow-kids">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://coldhollow.com" target="_blank" rel="noopener">Cold Hollow Cider Mill</a>
+            <span class="bestof-tag stowe">Waterbury</span>
+          </div>
+          <div class="bestof-desc">Cider donuts. Kids love the donut machine.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="biodome">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://espacepourlavie.ca/en/biodome" target="_blank" rel="noopener">Biodome</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Four ecosystems under one roof. Penguins!</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="old-port-splash-pad">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.oldportofmontreal.com" target="_blank" rel="noopener">Old Port splash pad</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Free, right on the waterfront. Carousel next door.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="jean-talon-market">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.marchespublics-mtl.com/en/marches/jean-talon-market/" target="_blank" rel="noopener">Jean-Talon Market</a>
+            <span class="bestof-tag montreal">Montreal</span>
+          </div>
+          <div class="bestof-desc">Let the 4yo pick fruit. The 2yo eats samples.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="smugglers-notch-boulders">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://vtstateparks.com/smugglers-notch.html" target="_blank" rel="noopener">Smugglers&rsquo; Notch boulders</a>
+            <span class="bestof-tag stowe">Stowe</span>
+          </div>
+          <div class="bestof-desc">Giant rocks to climb. 4yo paradise.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+    </div>
+
+    <!-- Best Roadside Stops -->
+    <div class="bestof-card">
+      <h3>&#128663; Best Roadside Stops</h3>
+      <div class="bestof-item" data-bestof="saratoga-springs">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <span class="bestof-name">Saratoga Springs, NY</span>
+            <span class="bestof-tag enroute">En Route</span>
+          </div>
+          <div class="bestof-desc">Congress Park, Hattie&rsquo;s fried chicken, Kru Coffee. 2 hrs from White Plains.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="cold-hollow-roadside">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://coldhollow.com" target="_blank" rel="noopener">Cold Hollow Cider Mill</a>
+            <span class="bestof-tag stowe">Waterbury</span>
+          </div>
+          <div class="bestof-desc">Cider donuts, apple cider. Right off Route 100.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="cabot-cheese">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://www.cabotcheese.coop" target="_blank" rel="noopener">Cabot Cheese Store</a>
+            <span class="bestof-tag stowe">Waterbury</span>
+          </div>
+          <div class="bestof-desc">Vermont cheddar, maple products, free samples</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="burlington">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <span class="bestof-name">Burlington</span>
+            <span class="bestof-tag stowe">Burlington</span>
+          </div>
+          <div class="bestof-desc">Church Street, Lake Champlain waterfront. 45 min from Stowe.</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="shelburne-farms">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://shelburnefarms.org" target="_blank" rel="noopener">Shelburne Farms</a>
+            <span class="bestof-tag stowe">Burlington</span>
+          </div>
+          <div class="bestof-desc">Working farm, walking trails, lake views</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+      <div class="bestof-item" data-bestof="shelburne-museum">
+        <div class="bestof-item-content">
+          <div class="bestof-item-top">
+            <a href="https://shelburnemuseum.org" target="_blank" rel="noopener">Shelburne Museum</a>
+            <span class="bestof-tag stowe">Burlington</span>
+          </div>
+          <div class="bestof-desc">Art + Americana, outdoor campus</div>
+        </div>
+        <button class="bestof-vote"><span>♡</span> <span class="bestof-vote-count"></span></button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================
+     #7 TRIP DASHBOARD
+     ============================================ -->
+<section class="trip-dashboard dark-section" id="dashboard">
+  <div class="dashboard-container">
+    <div class="section-label">Dashboard</div>
+    <h2 class="section-title">Trip pulse</h2>
+    <div class="section-divider"></div>
+    <div class="dashboard-stats">
+      <div class="dashboard-stat">
+        <div class="dashboard-stat-num" id="dashTravelers">0/5</div>
+        <div class="dashboard-stat-label">travelers signed up</div>
+      </div>
+      <div class="dashboard-stat">
+        <div class="dashboard-stat-num" id="dashReactions">0</div>
+        <div class="dashboard-stat-label">reactions</div>
+      </div>
+      <div class="dashboard-stat">
+        <div class="dashboard-stat-num" id="dashComments">0</div>
+        <div class="dashboard-stat-label">comments</div>
+      </div>
+      <div class="dashboard-stat">
+        <div class="dashboard-stat-num" id="dashChecklist">0/0</div>
+        <div class="dashboard-stat-label">checklist items done</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="footer">
+  <div class="footer-title">Stowe &amp; Montreal</div>
+  <div>June 11 &ndash; 19, 2026</div>
+</footer>
+
+<!-- ============================================
+     SCRIPTS
+     ============================================ -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.12.0/firebase-database-compat.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  /* ==========================================
+     FLEXOKI COLORS
+     ========================================== */
+  var FLEXOKI_COLORS = [
+    { name: 'Red',     hex: '#D14D41' },
+    { name: 'Orange',  hex: '#DA702C' },
+    { name: 'Yellow',  hex: '#D0A215' },
+    { name: 'Green',   hex: '#879A39' },
+    { name: 'Cyan',    hex: '#3AA99F' },
+    { name: 'Blue',    hex: '#4385BE' },
+    { name: 'Purple',  hex: '#8B7EC8' },
+    { name: 'Magenta', hex: '#CE5D97' }
+  ];
+
+  /* ==========================================
+     FIREBASE INIT
+     ========================================== */
+  var db = null;
+  var firebaseReady = false;
+
+  try {
+    var firebaseConfig = {
+      apiKey: "AIzaSyCBEawEzVhdztWbYnJfc1R9qEe8zvvFyAE",
+      authDomain: "stoweaways-2026.firebaseapp.com",
+      databaseURL: "https://stoweaways-2026-default-rtdb.firebaseio.com",
+      projectId: "stoweaways-2026",
+      storageBucket: "stoweaways-2026.firebasestorage.app",
+      messagingSenderId: "480201563934",
+      appId: "1:480201563934:web:1010e6e1206954870bf30f"
+    };
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    firebaseReady = true;
+  } catch (e) {
+    console.warn('Firebase failed to initialize, falling back to local-only mode:', e);
+  }
+
+  /* ==========================================
+     USER IDENTITY
+     ========================================== */
+  var currentUser = null;
+  var allUsers = {};
+
+  function loadLocalUser() {
+    try {
+      var stored = localStorage.getItem('stowe-mtl-user');
+      if (stored) {
+        currentUser = JSON.parse(stored);
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  function saveLocalUser(user) {
+    try {
+      localStorage.setItem('stowe-mtl-user', JSON.stringify(user));
+    } catch (e) {}
+  }
+
+  function getInitials(first, last) {
+    // Special case: AJ Adams → "AJ" not "AA"
+    if (first === 'AJ') return 'AJ';
+    return ((first || '').charAt(0) + (last || '').charAt(0)).toUpperCase();
+  }
+
+  /* ==========================================
+     TOAST HELPER
+     ========================================== */
+  var toastTimeout = null;
+  function showToast(message) {
+    var toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('visible');
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(function() {
+      toast.classList.remove('visible');
+      toastTimeout = null;
+    }, 3500);
+  }
+
+  /* ==========================================
+     AVATAR HELPERS
+     ========================================== */
+  function createAvatarEl(user, size) {
+    size = size || 24;
+    var el = document.createElement('span');
+    el.className = 'avatar';
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.fontSize = (size * 0.25) + 'px';
+    // Always use current color from allUsers
+    var currentColor = (allUsers[user.userId] && allUsers[user.userId].color) || user.color || '#999';
+    el.style.backgroundColor = currentColor;
+    el.textContent = user.initials || '??';
+    el.title = (user.firstName || '') + ' ' + (user.lastName || '');
+    if (user.userId) el.setAttribute('data-uid', user.userId);
+    return el;
+  }
+
+  function renderAvatarRow(container, userIds, maxShow) {
+    maxShow = maxShow || 3;
+    container.innerHTML = '';
+    var ids = Object.keys(userIds || {});
+    var shown = 0;
+    for (var i = 0; i < ids.length && shown < maxShow; i++) {
+      var u = allUsers[ids[i]];
+      if (u) {
+        container.appendChild(createAvatarEl(u));
+        shown++;
+      }
+    }
+    if (ids.length > maxShow) {
+      var overflow = document.createElement('span');
+      overflow.className = 'avatar-overflow';
+      overflow.textContent = '+' + (ids.length - maxShow);
+      container.appendChild(overflow);
+    }
+  }
+
+  /* ==========================================
+     USER MODAL
+     ========================================== */
+  var modalOverlay = document.getElementById('userModal');
+  var modalFirstName = document.getElementById('modalFirstName');
+  var modalLastName = document.getElementById('modalLastName');
+  var colorPicker = document.getElementById('colorPicker');
+  var modalSubmit = document.getElementById('modalSubmit');
+  var selectedColor = null;
+  var isEditingUser = false;
+
+  function buildColorPicker() {
+    colorPicker.innerHTML = '';
+    // Re-read allUsers to get latest taken colors
+    // Exclude current user AND any user matching the name in the inputs
+    var inputFirst = modalFirstName.value.trim();
+    var inputLast = modalLastName.value.trim();
+    var takenColors = {};
+    Object.keys(allUsers).forEach(function(uid) {
+      var u = allUsers[uid];
+      var isCurrentUser = currentUser && uid === currentUser.userId;
+      var isNameMatch = inputFirst && inputLast && u.firstName === inputFirst && u.lastName === inputLast;
+      if (!isCurrentUser && !isNameMatch) {
+        takenColors[u.color] = u;
+      }
+    });
+
+    FLEXOKI_COLORS.forEach(function(c) {
+      var swatch = document.createElement('div');
+      swatch.className = 'color-swatch';
+      swatch.style.backgroundColor = c.hex;
+      swatch.setAttribute('data-color', c.hex);
+      swatch.title = c.name;
+
+      var takenBy = takenColors[c.hex];
+      if (takenBy) {
+        swatch.classList.add('taken');
+        swatch.textContent = takenBy.initials || '';
+        swatch.title = c.name + ' (taken by ' + (takenBy.firstName || '') + ')';
+      } else {
+        swatch.addEventListener('click', function() {
+          document.querySelectorAll('.color-swatch.selected').forEach(function(s) {
+            s.classList.remove('selected');
+          });
+          swatch.classList.add('selected');
+          selectedColor = c.hex;
+          validateModal();
+        });
+      }
+
+      // Pre-select current user's color when editing
+      if (currentUser && currentUser.color === c.hex && !takenBy) {
+        swatch.classList.add('selected');
+        selectedColor = c.hex;
+      }
+
+      colorPicker.appendChild(swatch);
+    });
+
+    // Update name option circles with their chosen colors from Firebase
+    nameOptions.forEach(function(opt) {
+      var first = opt.getAttribute('data-first');
+      var last = opt.getAttribute('data-last');
+      var initialsEl = opt.querySelector('.name-option-initials');
+      // Find this person in allUsers
+      var userColor = null;
+      Object.keys(allUsers).forEach(function(uid) {
+        var u = allUsers[uid];
+        if (u.firstName === first && u.lastName === last && u.color) {
+          userColor = u.color;
+        }
+      });
+      if (userColor) {
+        initialsEl.style.backgroundColor = userColor;
+        initialsEl.style.color = '#fff';
+      } else {
+        initialsEl.style.backgroundColor = '#bbb';
+        initialsEl.style.color = '#fff';
+      }
+    });
+  }
+
+  function validateModal() {
+    var firstName = modalFirstName.value.trim();
+    var lastName = modalLastName.value.trim();
+    modalSubmit.disabled = !(firstName && lastName && selectedColor);
+  }
+
+  var nameOptions = document.querySelectorAll('.name-option');
+  nameOptions.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      nameOptions.forEach(function(o) { o.classList.remove('selected'); });
+      opt.classList.add('selected');
+      modalFirstName.value = opt.getAttribute('data-first');
+      modalLastName.value = opt.getAttribute('data-last');
+      validateModal();
+      buildColorPicker();
+    });
+  });
+
+  function showModal(editing) {
+    isEditingUser = !!editing;
+    nameOptions.forEach(function(o) { o.classList.remove('selected'); });
+    if (currentUser) {
+      modalFirstName.value = currentUser.firstName || '';
+      modalLastName.value = currentUser.lastName || '';
+      selectedColor = currentUser.color || null;
+      // Pre-select the matching name button
+      nameOptions.forEach(function(o) {
+        if (o.getAttribute('data-first') === currentUser.firstName && o.getAttribute('data-last') === currentUser.lastName) {
+          o.classList.add('selected');
+        }
+      });
+    } else {
+      modalFirstName.value = '';
+      modalLastName.value = '';
+      selectedColor = null;
+    }
+    buildColorPicker();
+    validateModal();
+    modalOverlay.style.display = 'flex';
+    requestAnimationFrame(function() {
+      modalOverlay.classList.add('visible');
+    });
+    // No focus needed — user clicks their name icon
+  }
+
+  function hideModal() {
+    modalOverlay.classList.remove('visible');
+    setTimeout(function() {
+      modalOverlay.style.display = 'none';
+    }, 400);
+  }
+
+  modalSubmit.addEventListener('click', function() {
+    var firstName = modalFirstName.value.trim();
+    var lastName = modalLastName.value.trim();
+    if (!firstName || !lastName || !selectedColor) return;
+
+    // Try to reclaim existing Firebase user with matching name
+    var userId = (currentUser && currentUser.userId) || null;
+    if (!userId) {
+      var uids = Object.keys(allUsers);
+      for (var i = 0; i < uids.length; i++) {
+        var u = allUsers[uids[i]];
+        if (u.firstName === firstName && u.lastName === lastName) {
+          userId = uids[i];
+          break;
+        }
+      }
+    }
+    // Deterministic ID from name — prevents duplicates
+    if (!userId) userId = (firstName + '-' + lastName).toLowerCase().replace(/[^a-z-]/g, '');
+    var initials = getInitials(firstName, lastName);
+
+    currentUser = {
+      userId: userId,
+      firstName: firstName,
+      lastName: lastName,
+      initials: initials,
+      color: selectedColor
+    };
+
+    saveLocalUser(currentUser);
+
+    // Write to Firebase (updates user record with current color)
+    if (firebaseReady) {
+      db.ref('users/' + userId).set({
+        firstName: firstName,
+        lastName: lastName,
+        initials: initials,
+        color: selectedColor
+      });
+    }
+
+    hideModal();
+    updateUserPill();
+  });
+
+  // Enter key submits modal
+  [modalFirstName, modalLastName].forEach(function(input) {
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !modalSubmit.disabled) {
+        modalSubmit.click();
+      }
+    });
+  });
+
+  // Escape key closes modal (only when editing, not on first sign-in)
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modalOverlay.style.display === 'flex' && isEditingUser) {
+      hideModal();
+    }
+  });
+
+  /* ==========================================
+     USER PILL
+     ========================================== */
+  var pillContainer = document.getElementById('userPillContainer');
+  var pillAvatar = document.getElementById('pillAvatar');
+  var pillName = document.getElementById('pillName');
+  var userPill = document.getElementById('userPill');
+  var userDropdown = document.getElementById('userDropdown');
+
+  function updateUserPill() {
+    if (!currentUser) {
+      pillContainer.style.display = 'none';
+      return;
+    }
+    pillContainer.style.display = 'block';
+    pillAvatar.style.backgroundColor = currentUser.color;
+    pillAvatar.textContent = currentUser.initials;
+    pillName.textContent = currentUser.firstName;
+  }
+
+  userPill.addEventListener('click', function(e) {
+    e.stopPropagation();
+    userDropdown.classList.toggle('open');
+  });
+
+  document.addEventListener('click', function() {
+    userDropdown.classList.remove('open');
+  });
+
+  document.getElementById('btnChangeName').addEventListener('click', function() {
+    userDropdown.classList.remove('open');
+    showModal(true);
+  });
+
+  document.getElementById('btnSwitchColor').addEventListener('click', function() {
+    userDropdown.classList.remove('open');
+    showModal(true);
+  });
+
+  /* ==========================================
+     FIREBASE: LOAD USERS + SHOW MODAL
+     ========================================== */
+  function initUserSystem() {
+    if (firebaseReady) {
+      db.ref('users').on('value', function(snapshot) {
+        allUsers = snapshot.val() || {};
+        // Ensure each user has a userId key for avatar rendering
+        Object.keys(allUsers).forEach(function(uid) {
+          allUsers[uid].userId = uid;
+        });
+        // If we have a current user, check if modal needed
+        if (!currentUser) {
+          showModal(false);
+        } else {
+          // Update current user's color from Firebase in case it changed
+          if (allUsers[currentUser.userId]) {
+            currentUser.color = allUsers[currentUser.userId].color;
+            saveLocalUser(currentUser);
+          }
+          updateUserPill();
+          buildColorPicker(); // Refresh taken colors
+          // Re-render all avatar elements on the page with current colors
+          document.querySelectorAll('.avatar[data-uid]').forEach(function(el) {
+            var uid = el.getAttribute('data-uid');
+            if (allUsers[uid]) {
+              el.style.backgroundColor = allUsers[uid].color;
+            }
+          });
+          // Re-render checkbox colors for current user
+          if (currentUser) {
+            document.querySelectorAll('.paper-card.packing li.checked .pack-check').forEach(function(box) {
+              var li = box.closest('li[data-item]');
+              if (!li) return;
+              // Re-read from Firebase isn't needed — just update the color
+              box.style.color = currentUser.color;
+            });
+          }
+        }
+      }, function(err) {
+        console.warn('Firebase users read failed:', err);
+        if (!currentUser) showModal(false);
+      });
+    } else {
+      if (!currentUser) showModal(false);
+    }
+  }
+
+  var hasLocalUser = loadLocalUser();
+  if (hasLocalUser) {
+    updateUserPill();
+  }
+
+  // Delay init slightly to let Firebase load
+  setTimeout(function() {
+    initUserSystem();
+  }, 100);
+
+  /* ==========================================
+     LEAFLET MAP
+     ========================================== */
+  var map = L.map('map', {
+    zoomControl: true,
+    scrollWheelZoom: false
+  }).setView([43.5, -73.2], 6);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 19,
+    subdomains: 'abcd'
+  }).addTo(map);
+
+  // Route polylines — dense waypoints following actual highways
+  // Leg 1: White Plains → I-87 N → I-787 → I-87 N → VT-89 → Stowe
+  var leg1Coords = [
+    [41.034,-73.763],[41.08,-73.77],[41.14,-73.80],[41.20,-73.82],
+    [41.30,-73.84],[41.40,-73.85],[41.50,-73.87],[41.60,-73.88],
+    [41.70,-73.89],[41.80,-73.89],[41.90,-73.88],[42.00,-73.86],
+    [42.10,-73.85],[42.20,-73.83],[42.30,-73.82],[42.40,-73.80],
+    [42.50,-73.79],[42.60,-73.78],[42.65,-73.76],
+    [42.72,-73.76],[42.80,-73.75],[42.87,-73.74],
+    [42.95,-73.73],[43.00,-73.74],[43.08,-73.78],
+    [43.15,-73.76],[43.23,-73.72],[43.30,-73.68],
+    [43.38,-73.60],[43.45,-73.50],[43.50,-73.40],
+    [43.55,-73.30],[43.60,-73.20],[43.65,-73.12],
+    [43.70,-73.05],[43.78,-73.00],[43.85,-72.95],
+    [43.92,-72.90],[44.00,-72.86],[44.08,-72.83],
+    [44.15,-72.80],[44.22,-72.78],[44.28,-72.76],
+    [44.34,-72.76],[44.38,-72.74],[44.42,-72.72],
+    [44.465,-72.687]
+  ];
+  // Leg 2: Stowe → Burlington → I-89 N → border → Montreal
+  var leg2Coords = [
+    [44.465,-72.687],[44.47,-72.70],[44.48,-72.73],
+    [44.49,-72.78],[44.49,-72.83],[44.49,-72.88],
+    [44.48,-72.93],[44.48,-72.98],[44.47,-73.03],
+    [44.47,-73.08],[44.47,-73.13],[44.476,-73.212],
+    [44.52,-73.18],[44.56,-73.15],[44.60,-73.12],
+    [44.65,-73.10],[44.70,-73.08],[44.75,-73.06],
+    [44.80,-73.05],[44.85,-73.04],[44.90,-73.05],
+    [44.95,-73.08],[45.00,-73.12],[45.05,-73.16],
+    [45.10,-73.20],[45.15,-73.24],[45.20,-73.28],
+    [45.25,-73.32],[45.30,-73.36],[45.35,-73.40],
+    [45.40,-73.46],[45.45,-73.50],[45.48,-73.54],
+    [45.501,-73.567]
+  ];
+  var toAirportCoords = [
+    [45.501,-73.567],[45.49,-73.60],[45.48,-73.64],
+    [45.47,-73.68],[45.46,-73.72],[45.457,-73.749]
+  ];
+
+  var leg1Line = L.polyline(leg1Coords, { color: '#2d6b4a', weight: 3.5, opacity: 0.7, smoothFactor: 2 }).addTo(map);
+  var leg2Line = L.polyline(leg2Coords, { color: '#1a3a5c', weight: 3.5, opacity: 0.7, smoothFactor: 2 }).addTo(map);
+  var airportLine = L.polyline(toAirportCoords, { color: '#6b6b6b', weight: 2, opacity: 0.5, dashArray: '6,8', smoothFactor: 2 }).addTo(map);
+
+  // Fit map to show full route
+  var allCoords = leg1Coords.concat(leg2Coords).concat(toAirportCoords);
+  map.fitBounds(L.latLngBounds(allCoords), { padding: [30, 30] });
+
+  // Major markers
+  var majorSpots = [
+    { coords: [41.034, -73.763], label: 'White Plains, NY', sub: 'Starting point', icon: '\u{1F697}', size: 1.4 },
+    { coords: [44.465, -72.687], label: 'Stowe, VT', sub: 'June 11\u201315', icon: '\u{1F3D4}\uFE0F', size: 1.4 },
+    { coords: [45.501, -73.567], label: 'Montreal', sub: 'June 15\u201319', icon: '\u{1F1E8}\u{1F1E6}', size: 1.4 },
+    { coords: [45.457, -73.749], label: 'YUL Airport', sub: 'Fly home June 19', icon: '\u2708\uFE0F', size: 1.2 },
+  ];
+
+  majorSpots.forEach(function(s) {
+    var icon = L.divIcon({
+      html: '<div style="font-size:' + s.size + 'rem;text-align:center;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3))">' + s.icon + '</div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      className: ''
+    });
+    L.marker(s.coords, { icon: icon }).addTo(map)
+      .bindPopup('<strong>' + s.label + '</strong><br><span style="color:#888;font-size:0.8rem">' + s.sub + '</span>');
+  });
+
+  // Key stops only (not all minor dots)
+  var keyStops = [
+    [43.08, -73.78, 'Saratoga Springs', 'Lunch stop', '#2d6b4a'],
+    [44.338, -72.756, 'Waterbury', 'Ben & Jerry\'s', '#2d6b4a'],
+    [44.476, -73.212, 'Burlington', 'Optional stop', '#1a3a5c'],
+  ];
+
+  keyStops.forEach(function(s) {
+    L.circleMarker([s[0], s[1]], {
+      radius: 4,
+      fillColor: s[4],
+      color: '#fff',
+      weight: 1.5,
+      fillOpacity: 0.7
+    }).addTo(map).bindPopup('<strong>' + s[2] + '</strong><br><span style="color:#888;font-size:0.8rem">' + s[3] + '</span>');
+  });
+
+  /* ==========================================
+     SCROLL ANIMATIONS (IntersectionObserver)
+     ========================================== */
+  var fadeElements = document.querySelectorAll('.fade-in');
+  var dayCards = document.querySelectorAll('.day-card');
+
+  // Fade-in observer for general elements
+  var fadeObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var parent = entry.target.parentElement;
+        var siblings = parent.querySelectorAll('.fade-in');
+        var index = Array.prototype.indexOf.call(siblings, entry.target);
+        setTimeout(function() {
+          entry.target.classList.add('visible');
+        }, index * 100);
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  fadeElements.forEach(function(el) { fadeObserver.observe(el); });
+
+  // Day card observer: fade in + map sync
+  var dayObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        if (!entry.target.classList.contains('visible')) {
+          entry.target.classList.add('visible');
+        }
+      }
+    });
+  }, { threshold: 0.3, rootMargin: '-10% 0px -40% 0px' });
+
+  dayCards.forEach(function(el) { dayObserver.observe(el); });
+
+  /* ==========================================
+     EMOJI REACTIONS (Firebase-backed)
+     ========================================== */
+  var EMOJIS = [
+    { emoji: '\u2764\uFE0F', name: 'heart' },
+    { emoji: '\uD83D\uDC4D', name: 'thumbsup' },
+    { emoji: '\uD83D\uDC4E', name: 'thumbsdown' },
+    { emoji: '\uD83D\uDE2C', name: 'grimace' }
+  ];
+
+  document.querySelectorAll('.reactions').forEach(function(container) {
+    var dayKey = container.getAttribute('data-key');
+
+    EMOJIS.forEach(function(e) {
+      var btn = document.createElement('button');
+      btn.className = 'reaction-btn';
+      btn.innerHTML = '<span class="emoji">' + e.emoji + '</span><span class="count"></span>';
+      btn.setAttribute('aria-label', 'React with ' + e.name);
+
+      var countEl = btn.querySelector('.count');
+      var reactionRef = firebaseReady ? db.ref('reactions/' + dayKey + '/' + e.name) : null;
+
+      // Real-time listener
+      if (reactionRef) {
+        reactionRef.on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          var userIds = Object.keys(data);
+          var count = userIds.length;
+          countEl.textContent = count > 0 ? count : '';
+
+          // Check if current user reacted
+          if (currentUser && data[currentUser.userId]) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+
+          // Tooltip with names on hover
+          var names = userIds.map(function(uid) {
+            var u = allUsers[uid];
+            return u ? (u.firstName || '') : '';
+          }).filter(Boolean);
+          btn.title = names.length ? names.join(', ') : '';
+        }, function(err) {
+          console.warn('Reaction listener error:', err);
+        });
+      }
+
+      btn.addEventListener('click', function() {
+        if (!currentUser) {
+          showModal(false);
+          return;
+        }
+
+        if (reactionRef) {
+          var userRef = reactionRef.child(currentUser.userId);
+          // Toggle based on current UI state — real-time listener updates UI
+          if (btn.classList.contains('active')) {
+            userRef.remove();
+          } else {
+            userRef.set(true);
+          }
+        }
+
+        // Bounce animation
+        btn.classList.add('bounce');
+        setTimeout(function() { btn.classList.remove('bounce'); }, 200);
+      });
+
+      container.appendChild(btn);
+    });
+  });
+
+  /* ==========================================
+     VOTING (Firebase-backed)
+     ========================================== */
+  function updateVoteBarsFromFirebase() {
+    if (!firebaseReady) return;
+
+    var votesRef = db.ref('votes');
+    votesRef.on('value', function(snapshot) {
+      var allVotes = snapshot.val() || {};
+      var options = document.querySelectorAll('.vote-option');
+      var maxCount = 0;
+
+      // First pass: count
+      options.forEach(function(opt) {
+        var key = opt.getAttribute('data-vote');
+        var voters = allVotes[key] || {};
+        var count = Object.keys(voters).length;
+        if (count > maxCount) maxCount = count;
+      });
+
+      // Second pass: render
+      options.forEach(function(opt) {
+        var key = opt.getAttribute('data-vote');
+        var voters = allVotes[key] || {};
+        var count = Object.keys(voters).length;
+        var pct = maxCount > 0 ? (count / maxCount) * 100 : 0;
+        var isVoted = currentUser && voters[currentUser.userId];
+
+        opt.querySelector('.vote-bar').style.width = pct + '%';
+        opt.querySelector('.vote-option-count').textContent = count > 0 ? count : '0';
+
+        if (isVoted) {
+          opt.classList.add('voted');
+        } else {
+          opt.classList.remove('voted');
+        }
+
+        // Render voter avatars
+        var avatarContainer = opt.querySelector('.vote-avatars');
+        if (avatarContainer) {
+          renderAvatarRow(avatarContainer, voters, 3);
+        }
+      });
+    }, function(err) {
+      console.warn('Votes listener error:', err);
+    });
+  }
+
+  document.querySelectorAll('.vote-option').forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      if (!currentUser) {
+        showModal(false);
+        return;
+      }
+      if (!firebaseReady) return;
+
+      var key = opt.getAttribute('data-vote');
+      var userVoteRef = db.ref('votes/' + key + '/' + currentUser.userId);
+
+      // Toggle based on current UI state — real-time listener updates UI
+      if (opt.classList.contains('voted')) {
+        userVoteRef.remove();
+      } else {
+        userVoteRef.set(true);
+      }
+    });
+  });
+
+  updateVoteBarsFromFirebase();
+
+  /* ==========================================
+     CUSTOM VOTE OPTIONS (Firebase-backed)
+     ========================================== */
+  (function initCustomVotes() {
+    var input = document.getElementById('customVoteInput');
+    var submitBtn = document.getElementById('customVoteSubmit');
+    var listEl = document.getElementById('customVoteList');
+    if (!input || !submitBtn || !listEl) return;
+
+    var customVoteRef = firebaseReady ? db.ref('custom-votes') : null;
+
+    submitBtn.addEventListener('click', addCustomVote);
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') addCustomVote();
+    });
+
+    function addCustomVote() {
+      var text = input.value.trim();
+      if (!text || !currentUser || !customVoteRef) return;
+      var id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').substring(0, 40);
+      customVoteRef.child(id).set({
+        label: text,
+        createdBy: currentUser.userId
+      });
+      // Auto-vote for it
+      db.ref('votes/' + id + '/' + currentUser.userId).set(true);
+      input.value = '';
+    }
+
+    if (customVoteRef) {
+      customVoteRef.on('value', function(snapshot) {
+        listEl.innerHTML = '';
+        var data = snapshot.val() || {};
+        Object.keys(data).forEach(function(id) {
+          var item = data[id];
+          // Create a vote option matching the existing style
+          var opt = document.createElement('div');
+          opt.className = 'vote-option';
+          opt.setAttribute('data-vote', id);
+          // Build DOM safely to prevent XSS from user-supplied labels
+          var bar = document.createElement('div');
+          bar.className = 'vote-bar';
+          var content = document.createElement('div');
+          content.className = 'vote-option-content';
+          var labelSpan = document.createElement('span');
+          labelSpan.className = 'vote-option-label';
+          labelSpan.textContent = item.label || id;
+          var rightDiv = document.createElement('div');
+          rightDiv.className = 'vote-option-right';
+          var avatarsDiv = document.createElement('div');
+          avatarsDiv.className = 'vote-avatars avatar-row';
+          var countSpan = document.createElement('span');
+          countSpan.className = 'vote-option-count';
+          countSpan.textContent = '0';
+          rightDiv.appendChild(avatarsDiv);
+          rightDiv.appendChild(countSpan);
+          content.appendChild(labelSpan);
+          content.appendChild(rightDiv);
+          opt.appendChild(bar);
+          opt.appendChild(content);
+
+          // Wire up voting (same as static options)
+          var voteRef = db.ref('votes/' + id);
+          var countEl = opt.querySelector('.vote-option-count');
+          var barEl = opt.querySelector('.vote-bar');
+          var avatarRow = opt.querySelector('.vote-avatars');
+
+          voteRef.on('value', function(snap) {
+            var voters = snap.val() || {};
+            var count = Object.keys(voters).length;
+            countEl.textContent = count > 0 ? count : '0';
+            barEl.style.width = Math.min(count * 20, 100) + '%';
+            if (currentUser && voters[currentUser.userId]) {
+              opt.classList.add('voted');
+            } else {
+              opt.classList.remove('voted');
+            }
+            renderAvatarRow(avatarRow, voters, 3);
+          });
+
+          opt.addEventListener('click', function() {
+            if (!currentUser) { showModal(false); return; }
+            var userVoteRef = voteRef.child(currentUser.userId);
+            // Toggle based on current UI state — real-time listener updates UI
+            if (opt.classList.contains('voted')) {
+              userVoteRef.remove();
+            } else {
+              userVoteRef.set(true);
+            }
+          });
+
+          listEl.appendChild(opt);
+        });
+      });
+    }
+  })();
+
+  /* ==========================================
+     CHECKLISTS (Firebase-backed)
+     ========================================== */
+  function initChecklists() {
+    // GROUP TO-DOS (claimable, data-max="1")
+    var groupCard = document.querySelector('.paper-card.group-todos');
+    if (groupCard) {
+      var groupItems = groupCard.querySelectorAll('li[data-item]');
+      groupItems.forEach(function(li) {
+        var itemId = li.getAttribute('data-item');
+        var checkRef = firebaseReady ? db.ref('checklist/' + itemId) : null;
+        var slot = li.querySelector('.claim-slot');
+
+        if (checkRef) {
+          checkRef.on('value', function(snapshot) {
+            var data = snapshot.val() || {};
+            var userIds = Object.keys(data);
+            var claimedBy = userIds.length > 0 ? userIds[0] : null;
+            var claimant = claimedBy ? allUsers[claimedBy] : null;
+            var isMine = currentUser && claimedBy === currentUser.userId;
+            var status = claimedBy ? (data[claimedBy] || 'claimed') : null;
+            // Normalize: true (legacy) = "claimed"
+            if (status === true) status = 'claimed';
+            var isDone = (status === 'done');
+
+            // Remove old claim-name if exists
+            var oldName = slot.querySelector('.claim-name');
+            if (oldName) oldName.remove();
+
+            var checkSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+            // Clear slot
+            slot.innerHTML = '';
+            slot.style.backgroundColor = '';
+
+            if (isMine && isDone) {
+              var myColor = (allUsers[currentUser.userId] && allUsers[currentUser.userId].color) || currentUser.color;
+              slot.className = 'claim-slot mine done';
+              slot.style.backgroundColor = myColor;
+              slot.innerHTML = checkSvg;
+              slot.setAttribute('data-uid', currentUser.userId);
+              slot.title = 'Click to unclaim';
+              li.classList.add('is-claimed');
+              li.classList.add('is-done');
+            } else if (isMine) {
+              var myColor = (allUsers[currentUser.userId] && allUsers[currentUser.userId].color) || currentUser.color;
+              slot.className = 'claim-slot mine';
+              slot.style.backgroundColor = myColor;
+              var initSpan = document.createElement('span');
+              initSpan.className = 'slot-initials';
+              initSpan.textContent = currentUser.initials;
+              var checkSpan = document.createElement('span');
+              checkSpan.className = 'slot-check';
+              checkSpan.innerHTML = checkSvg;
+              slot.appendChild(initSpan);
+              slot.appendChild(checkSpan);
+              slot.setAttribute('data-uid', currentUser.userId);
+              slot.title = 'Click to mark done';
+              li.classList.add('is-claimed');
+              li.classList.remove('is-done');
+            } else if (claimant && isDone) {
+              var ownerColor = (allUsers[claimedBy] && allUsers[claimedBy].color) || '#999';
+              slot.className = 'claim-slot claimed done';
+              slot.style.backgroundColor = ownerColor;
+              slot.innerHTML = checkSvg;
+              slot.setAttribute('data-uid', claimedBy);
+              slot.title = (claimant.firstName || 'Someone') + ' completed this';
+              li.classList.add('is-claimed');
+              li.classList.add('is-done');
+            } else if (claimant) {
+              var ownerColor = (allUsers[claimedBy] && allUsers[claimedBy].color) || '#999';
+              slot.className = 'claim-slot claimed';
+              slot.style.backgroundColor = ownerColor;
+              slot.textContent = claimant.initials || '??';
+              slot.setAttribute('data-uid', claimedBy);
+              slot.title = (claimant.firstName || 'Someone') + ' is on it';
+              li.classList.add('is-claimed');
+              li.classList.remove('is-done');
+            } else {
+              slot.className = 'claim-slot';
+              slot.removeAttribute('data-uid');
+              slot.title = 'Click to claim';
+              li.classList.remove('is-claimed');
+              li.classList.remove('is-done');
+            }
+
+            if (typeof updateProgress === 'function') updateProgress();
+          });
+        }
+
+        slot.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (!currentUser) { showModal(false); return; }
+          if (!checkRef) return;
+          var userRef = checkRef.child(currentUser.userId);
+          if (slot.classList.contains('done') && slot.classList.contains('mine')) {
+            // Done → unclaim
+            userRef.remove();
+          } else if (slot.classList.contains('mine')) {
+            // Claimed → done
+            userRef.set('done');
+          } else if (!slot.classList.contains('claimed')) {
+            // Unclaimed → claim
+            userRef.set('claimed');
+          }
+        });
+      });
+    }
+
+    // PERSONAL PACKING (checkboxes, data-max="7")
+    var packingCard = document.querySelector('.paper-card.packing');
+    if (packingCard) {
+      var packItems = packingCard.querySelectorAll('li[data-item]');
+      packItems.forEach(function(li) {
+        var itemId = li.getAttribute('data-item');
+        var checkRef = firebaseReady ? db.ref('checklist/' + itemId) : null;
+        var tallyEl = li.querySelector('.pack-tally');
+        var avatarContainer = li.querySelector('.avatar-row');
+        var maxCount = parseInt(li.getAttribute('data-max'), 10) || 7;
+
+        if (checkRef) {
+          checkRef.on('value', function(snapshot) {
+            var data = snapshot.val() || {};
+            var userIds = Object.keys(data);
+            var count = userIds.length;
+            var myChecked = currentUser && data[currentUser.userId];
+
+            if (count > 0) {
+              tallyEl.textContent = count + '/' + maxCount;
+            } else {
+              tallyEl.textContent = '';
+            }
+
+            if (myChecked) {
+              li.classList.add('checked');
+              var currentColor = (allUsers[currentUser.userId] && allUsers[currentUser.userId].color) || currentUser.color || '#999';
+              li.querySelector('.pack-check').style.color = currentColor;
+            } else {
+              li.classList.remove('checked');
+              li.querySelector('.pack-check').style.color = '';
+            }
+
+            if (avatarContainer) {
+              renderAvatarRow(avatarContainer, data, 3);
+            }
+
+            if (typeof updateProgress === 'function') updateProgress();
+          });
+        }
+
+        li.addEventListener('click', function(e) {
+          if (e.target.closest('a')) return;
+          if (!currentUser) { showModal(false); return; }
+          if (!checkRef) return;
+          var userRef = checkRef.child(currentUser.userId);
+          if (li.classList.contains('checked')) {
+            userRef.remove();
+          } else {
+            userRef.set(true);
+          }
+        });
+      });
+    }
+  }
+
+  initChecklists();
+
+  /* ==========================================
+     BEST-OF VOTES (Firebase-backed)
+     ========================================== */
+  (function initBestofVotes() {
+    var items = document.querySelectorAll('.bestof-item[data-bestof]');
+    items.forEach(function(item) {
+      var id = item.getAttribute('data-bestof');
+      var btn = item.querySelector('.bestof-vote');
+      var countEl = btn.querySelector('.bestof-vote-count');
+      if (!btn || !id) return;
+
+      var voteRef = firebaseReady ? db.ref('bestof-votes/' + id) : null;
+
+      if (voteRef) {
+        voteRef.on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          var count = Object.keys(data).length;
+          countEl.textContent = count > 0 ? count : '';
+          if (currentUser && data[currentUser.userId]) {
+            btn.classList.add('voted');
+            btn.querySelector('span:first-child').textContent = '♥';
+          } else {
+            btn.classList.remove('voted');
+            btn.querySelector('span:first-child').textContent = '♡';
+          }
+        });
+      }
+
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!currentUser) { showModal(false); return; }
+        if (!voteRef) return;
+        var userRef = voteRef.child(currentUser.userId);
+        if (btn.classList.contains('voted')) {
+          userRef.remove();
+        } else {
+          userRef.set(true);
+        }
+      });
+    });
+  })();
+
+  /* ==========================================
+     TABLE OF CONTENTS (scroll + highlight)
+     ========================================== */
+  var tocLinks = document.querySelectorAll('.toc-link[data-target]');
+  var tocSections = [];
+
+  tocLinks.forEach(function(link) {
+    var targetId = link.getAttribute('data-target');
+    var section = document.getElementById(targetId);
+    if (section) {
+      tocSections.push({ link: link, section: section });
+    }
+
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  var tocObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(function(l) { l.classList.remove('active'); });
+        for (var i = 0; i < tocSections.length; i++) {
+          if (tocSections[i].section === entry.target) {
+            tocSections[i].link.classList.add('active');
+            break;
+          }
+        }
+      }
+    });
+  }, { threshold: 0, rootMargin: '-20% 0px -60% 0px' });
+
+  tocSections.forEach(function(item) {
+    tocObserver.observe(item.section);
+  });
+
+  /* ==========================================
+     PER-DAY COMMENTS (Firebase-backed, always visible input)
+     ========================================== */
+  function formatTimestamp(ts) {
+    var d = new Date(ts);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var h = d.getHours();
+    var m = d.getMinutes();
+    var ampm = h >= 12 ? 'pm' : 'am';
+    h = h % 12 || 12;
+    return months[d.getMonth()] + ' ' + d.getDate() + ', ' + h + ':' + (m < 10 ? '0' : '') + m + ampm;
+  }
+
+  function initDayComments() {
+    var dayCards = document.querySelectorAll('.day-card[id]');
+
+    dayCards.forEach(function(card) {
+      var dayId = card.getAttribute('id');
+
+      // Create comment section HTML
+      var section = document.createElement('div');
+      section.className = 'day-comments-section';
+
+      var toggle = document.createElement('div');
+      toggle.className = 'day-comments-toggle';
+      toggle.innerHTML = '\uD83D\uDCAC <span class="comment-count-label">0 comments</span>';
+
+      var body = document.createElement('div');
+      body.className = 'day-comments-body';
+
+      var commentsList = document.createElement('div');
+      commentsList.className = 'day-comments-list';
+
+      var inputRow = document.createElement('div');
+      inputRow.className = 'day-comment-input-row';
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = 'Add a comment...';
+      input.maxLength = 500;
+
+      var postBtn = document.createElement('button');
+      postBtn.textContent = 'Post';
+
+      inputRow.appendChild(input);
+      inputRow.appendChild(postBtn);
+      body.appendChild(commentsList);
+      body.appendChild(inputRow);
+      section.appendChild(toggle);
+      section.appendChild(body);
+      card.appendChild(section);
+
+      // Post comment
+      function postComment() {
+        if (!currentUser) {
+          showModal(false);
+          return;
+        }
+        var text = input.value.trim();
+        if (!text) return;
+        if (!firebaseReady) return;
+
+        db.ref('comments/' + dayId).push({
+          userId: currentUser.userId,
+          name: currentUser.firstName + ' ' + currentUser.lastName,
+          initials: currentUser.initials,
+          color: currentUser.color,
+          text: text,
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+
+        input.value = '';
+      }
+
+      postBtn.addEventListener('click', postComment);
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') postComment();
+      });
+
+      // Prevent card click handlers from interfering
+      input.addEventListener('click', function(e) { e.stopPropagation(); });
+      postBtn.addEventListener('click', function(e) { e.stopPropagation(); });
+
+      // Listen for comments
+      if (firebaseReady) {
+        db.ref('comments/' + dayId).on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          var comments = [];
+          Object.keys(data).forEach(function(key) {
+            var c = data[key];
+            c.id = key;
+            comments.push(c);
+          });
+          comments.sort(function(a, b) { return (a.timestamp || 0) - (b.timestamp || 0); });
+
+          // Update count label
+          var countLabel = toggle.querySelector('.comment-count-label');
+          countLabel.textContent = comments.length + ' comment' + (comments.length !== 1 ? 's' : '');
+
+          // Render comments
+          commentsList.innerHTML = '';
+          comments.forEach(function(c) {
+            var commentEl = document.createElement('div');
+            commentEl.className = 'day-comment';
+
+            var avatar = document.createElement('div');
+            avatar.className = 'comment-avatar avatar';
+            var commentColor = (allUsers[c.userId] && allUsers[c.userId].color) || c.color || '#999';
+            avatar.style.backgroundColor = commentColor;
+            avatar.textContent = (allUsers[c.userId] && allUsers[c.userId].initials) || c.initials || '??';
+            avatar.setAttribute('data-uid', c.userId);
+
+            var content = document.createElement('div');
+            content.className = 'comment-content';
+
+            var header = document.createElement('div');
+            header.className = 'comment-header';
+
+            var name = document.createElement('span');
+            name.className = 'comment-name';
+            name.textContent = c.name || 'Unknown';
+
+            var time = document.createElement('span');
+            time.className = 'comment-time';
+            time.textContent = c.timestamp ? formatTimestamp(c.timestamp) : '';
+
+            var text = document.createElement('div');
+            text.className = 'comment-text';
+            text.textContent = c.text;
+
+            header.appendChild(name);
+            header.appendChild(time);
+            content.appendChild(header);
+            content.appendChild(text);
+            commentEl.appendChild(avatar);
+            commentEl.appendChild(content);
+
+            // Delete button for own comments
+            if (currentUser && c.userId === currentUser.userId) {
+              var deleteBtn = document.createElement('button');
+              deleteBtn.className = 'comment-delete-btn';
+              deleteBtn.textContent = '\u00D7';
+              deleteBtn.title = 'Delete comment';
+              deleteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (confirm('Delete this comment?')) {
+                  firebase.database().ref('comments/' + dayId + '/' + c.id).remove();
+                }
+              });
+              commentEl.appendChild(deleteBtn);
+            }
+
+            commentsList.appendChild(commentEl);
+          });
+        });
+      }
+    });
+  }
+
+  initDayComments();
+
+  /* ==========================================
+     ASK CLAUDE BUTTON (per day card)
+     ========================================== */
+  function initAskClaude() {
+    var dayCards = document.querySelectorAll('.day-card[id]');
+
+    dayCards.forEach(function(card) {
+      var header = card.querySelector('.day-header');
+      var dayDate = header.querySelector('.day-date').textContent;
+      var dayTitle = card.querySelector('h3').textContent;
+
+      // Place Ask Claude button after meal-tip, before reactions
+      var mealTip = card.querySelector('.meal-tip');
+      var reactionsDiv = card.querySelector('.reactions');
+      var insertBefore = reactionsDiv || null;
+
+      var row = document.createElement('div');
+      row.className = 'ask-claude-row';
+      var btn = document.createElement('button');
+      btn.className = 'ask-claude-btn';
+      btn.innerHTML = '<span class="ask-claude-icon">\u2728</span> Ask Claude about this day';
+      row.appendChild(btn);
+
+      if (insertBefore) {
+        card.insertBefore(row, insertBefore);
+      } else {
+        card.appendChild(row);
+      }
+
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+
+        // Extract text content from the card
+        var cardText = dayDate + '\n' + dayTitle + '\n\n';
+        var paragraphs = card.querySelectorAll(':scope > p');
+        paragraphs.forEach(function(p) { cardText += p.textContent + '\n'; });
+        var listItems = card.querySelectorAll(':scope > ul > li');
+        listItems.forEach(function(li) { cardText += '- ' + li.textContent + '\n'; });
+        if (mealTip) { cardText += '\nDining: ' + mealTip.textContent; }
+
+        var prompt = 'I\'m planning a group trip (5 adults, 2 kids ages 2 and 4) in June 2026. Here\'s our itinerary for ' + dayDate + ':\n\n' + cardText + '\n\nHelp me refine this day. I\'m open to restaurant alternatives, activity suggestions, timing adjustments, or logistics tips. What questions do you have?';
+
+        // Open Claude with pre-filled prompt via URL
+        var claudeUrl = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
+        window.open(claudeUrl, '_blank');
+      });
+    });
+  }
+
+  initAskClaude();
+
+  /* ==========================================
+     COLLABORATIVE NOTES (Firebase-backed)
+     ========================================== */
+  function initNotes() {
+    var rows = document.querySelectorAll('.notes-row[data-note-day]');
+
+    rows.forEach(function(row) {
+      var dayId = row.getAttribute('data-note-day');
+      var notesList = row.querySelector('.notes-list');
+      var input = row.querySelector('.note-input-row input');
+      var addBtn = row.querySelector('.note-input-row button');
+
+      function addNote() {
+        if (!currentUser) {
+          showModal(false);
+          return;
+        }
+        var text = input.value.trim();
+        if (!text) return;
+        if (!firebaseReady) return;
+
+        db.ref('notes/' + dayId).push({
+          userId: currentUser.userId,
+          name: currentUser.firstName + ' ' + currentUser.lastName,
+          initials: currentUser.initials,
+          color: currentUser.color,
+          text: text,
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+
+        input.value = '';
+      }
+
+      addBtn.addEventListener('click', addNote);
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') addNote();
+      });
+
+      // Listen for notes
+      if (firebaseReady) {
+        db.ref('notes/' + dayId).on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          var notes = [];
+          Object.keys(data).forEach(function(key) {
+            var n = data[key];
+            n.id = key;
+            notes.push(n);
+          });
+          notes.sort(function(a, b) { return (a.timestamp || 0) - (b.timestamp || 0); });
+
+          notesList.innerHTML = '';
+          notes.forEach(function(n) {
+            var entry = document.createElement('div');
+            entry.className = 'note-entry';
+
+            var avatar = document.createElement('div');
+            avatar.className = 'note-avatar avatar';
+            var noteColor = (allUsers[n.userId] && allUsers[n.userId].color) || n.color || '#999';
+            avatar.style.backgroundColor = noteColor;
+            avatar.textContent = (allUsers[n.userId] && allUsers[n.userId].initials) || n.initials || '??';
+            avatar.setAttribute('data-uid', n.userId);
+
+            var body = document.createElement('div');
+            body.className = 'note-body';
+
+            var author = document.createElement('span');
+            author.className = 'note-author';
+            author.textContent = n.name || 'Unknown';
+
+            var text = document.createElement('span');
+            text.className = 'note-text';
+            text.textContent = ' ' + n.text;
+
+            body.appendChild(author);
+            body.appendChild(text);
+            entry.appendChild(avatar);
+            entry.appendChild(body);
+
+            // Delete button for own notes
+            if (currentUser && n.userId === currentUser.userId) {
+              var deleteBtn = document.createElement('button');
+              deleteBtn.className = 'note-delete-btn';
+              deleteBtn.textContent = '\u00D7';
+              deleteBtn.title = 'Delete note';
+              deleteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                firebase.database().ref('notes/' + dayId + '/' + n.id).remove();
+              });
+              entry.appendChild(deleteBtn);
+            }
+
+            notesList.appendChild(entry);
+          });
+        });
+      }
+    });
+  }
+
+  initNotes();
+
+  /* ==========================================
+     #1 COUNTDOWN TIMER
+     ========================================== */
+  (function initCountdown() {
+    var departure = new Date('2026-06-11T08:00:00-04:00').getTime();
+    var display = document.getElementById('countdownDisplay');
+    if (!display) return;
+
+    function update() {
+      var now = Date.now();
+      var diff = departure - now;
+
+      if (diff <= 0) {
+        display.innerHTML = '<span class="countdown-letsgo">Let\'s go! \uD83C\uDF89</span>';
+        return;
+      }
+
+      var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      display.innerHTML = '<span class="countdown-big">' + days + '</span>' +
+        '<span class="countdown-sub">days ' + hours + 'h ' + minutes + 'm until departure</span>';
+    }
+
+    update();
+    setInterval(update, 60000); // update every minute
+  })();
+
+  /* ==========================================
+     #2 SCROLL PROGRESS BAR
+     ========================================== */
+  var updateProgress = (function initScrollProgress() {
+    var bar = document.getElementById('scrollProgress');
+    if (!bar) return function() {};
+
+    // Determine the scroll boundaries for Stowe vs Montreal content
+    function updateProgress() {
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+
+      var pct = Math.min((scrollTop / docHeight) * 100, 100);
+      bar.style.width = pct + '%';
+
+      // Color transition: green (Stowe) -> blue (Montreal)
+      if (pct < 40) {
+        bar.style.background = 'var(--stowe)';
+      } else if (pct < 55) {
+        bar.style.background = 'linear-gradient(90deg, var(--stowe), var(--travel))';
+      } else {
+        bar.style.background = 'linear-gradient(90deg, var(--stowe), var(--montreal))';
+      }
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+    return updateProgress;
+  })();
+
+
+  /* ==========================================
+     #5 EMOJI PARTICLE BURST
+     ========================================== */
+  (function initEmojiParticles() {
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('.reaction-btn');
+      if (!btn) return;
+
+      var emojiEl = btn.querySelector('.emoji');
+      if (!emojiEl) return;
+      var emoji = emojiEl.textContent;
+
+      var rect = btn.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height / 2;
+
+      var count = 6 + Math.floor(Math.random() * 3); // 6-8 particles
+      for (var i = 0; i < count; i++) {
+        var particle = document.createElement('span');
+        particle.className = 'emoji-particle';
+        particle.textContent = emoji;
+
+        // Random direction
+        var dx = (Math.random() - 0.5) * 120;
+        var dy = -40 - Math.random() * 80;
+        var rot = (Math.random() - 0.5) * 180;
+
+        particle.style.left = cx + 'px';
+        particle.style.top = cy + 'px';
+        particle.style.setProperty('--dx', dx + 'px');
+        particle.style.setProperty('--dy', dy + 'px');
+        particle.style.setProperty('--rot', rot + 'deg');
+        particle.style.animationDelay = (Math.random() * 0.1) + 's';
+
+        document.body.appendChild(particle);
+
+        // Remove after animation
+        (function(p) {
+          setTimeout(function() {
+            if (p.parentNode) p.parentNode.removeChild(p);
+          }, 1100);
+        })(particle);
+      }
+    });
+  })();
+
+  /* ==========================================
+     #6 WELCOME BACK TOAST
+     ========================================== */
+  (function initWelcomeToast() {
+    // Check if user is returning (has localStorage identity)
+    var hasUser = loadLocalUser();
+    if (!hasUser || !currentUser) return;
+
+    // Only show once per session
+    var sessionKey = 'stowe-mtl-welcomed';
+    if (sessionStorage.getItem(sessionKey)) return;
+    sessionStorage.setItem(sessionKey, '1');
+
+    var toast = document.createElement('div');
+    toast.className = 'welcome-toast';
+    toast.textContent = 'Welcome back, ' + currentUser.firstName + '! \u2728';
+    toast.style.backgroundColor = currentUser.color || 'var(--primary)';
+    document.body.appendChild(toast);
+
+    setTimeout(function() {
+      toast.classList.add('visible');
+    }, 600);
+
+    setTimeout(function() {
+      toast.classList.remove('visible');
+      setTimeout(function() {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 500);
+    }, 3600);
+  })();
+
+  /* ==========================================
+     #7 TRIP STATS DASHBOARD (Firebase real-time)
+     ========================================== */
+  (function initDashboard() {
+    if (!firebaseReady) return;
+
+    // Travelers count
+    db.ref('users').on('value', function(snap) {
+      var users = snap.val() || {};
+      var count = Object.keys(users).length;
+      var el = document.getElementById('dashTravelers');
+      if (el) el.textContent = count + '/5';
+    });
+
+    // Reactions count
+    db.ref('reactions').on('value', function(snap) {
+      var data = snap.val() || {};
+      var total = 0;
+      Object.keys(data).forEach(function(dayKey) {
+        var dayReactions = data[dayKey] || {};
+        Object.keys(dayReactions).forEach(function(emojiKey) {
+          var users = dayReactions[emojiKey] || {};
+          total += Object.keys(users).length;
+        });
+      });
+      var el = document.getElementById('dashReactions');
+      if (el) el.textContent = total;
+    });
+
+    // Comments count
+    db.ref('comments').on('value', function(snap) {
+      var data = snap.val() || {};
+      var total = 0;
+      Object.keys(data).forEach(function(dayKey) {
+        var comments = data[dayKey] || {};
+        total += Object.keys(comments).length;
+      });
+      var el = document.getElementById('dashComments');
+      if (el) el.textContent = total;
+      // Recalculate scroll progress (content may have changed page height)
+      if (updateProgress) updateProgress();
+    });
+
+    // Checklist count
+    db.ref('checklist').on('value', function(snap) {
+      var data = snap.val() || {};
+      var done = 0;
+      var totalItems = document.querySelectorAll('.paper-card[data-checklist] li[data-item]').length;
+      // Count items that have at least one check
+      Object.keys(data).forEach(function(itemKey) {
+        var checkers = data[itemKey] || {};
+        if (Object.keys(checkers).length > 0) done++;
+      });
+      var el = document.getElementById('dashChecklist');
+      if (el) el.textContent = done + '/' + totalItems;
+      // Recalculate scroll progress (content may have changed page height)
+      if (updateProgress) updateProgress();
+    });
+  })();
+
+  /* ==========================================
+     #9 FUN EMPTY STATES
+     ========================================== */
+  (function initEmptyStates() {
+    // Override the comment count label rendering to show fun messages
+    // Patch the existing comment listener by watching for 0-comment state
+    var emptyMessages = {
+      comments: 'No comments yet \u2014 be the first to weigh in!',
+      notes: 'No notes yet \u2014 what are you thinking?',
+      votes: 'Be the first to vote!'
+    };
+
+    // For comments: observe the comment count labels
+    function checkCommentEmpty() {
+      document.querySelectorAll('.comment-count-label').forEach(function(label) {
+        if (label.textContent === '0 comments') {
+          label.textContent = emptyMessages.comments;
+          label.style.fontStyle = 'italic';
+          label.style.color = 'var(--text-light)';
+        } else {
+          label.style.fontStyle = '';
+          label.style.color = '';
+        }
+      });
+    }
+
+    // For notes: observe note lists
+    function checkNotesEmpty() {
+      document.querySelectorAll('.notes-row .notes-list').forEach(function(list) {
+        if (list.children.length === 0 && !list.querySelector('.empty-state-msg')) {
+          var msg = document.createElement('div');
+          msg.className = 'empty-state-msg';
+          msg.textContent = emptyMessages.notes;
+          list.appendChild(msg);
+        }
+        // Remove empty state when notes exist
+        var emptyMsg = list.querySelector('.empty-state-msg');
+        if (emptyMsg && list.querySelectorAll('.note-entry').length > 0) {
+          emptyMsg.remove();
+        }
+      });
+    }
+
+    // Run periodically to catch Firebase updates
+    setInterval(function() {
+      checkCommentEmpty();
+      checkNotesEmpty();
+    }, 1000);
+
+    // Initial run
+    setTimeout(function() {
+      checkCommentEmpty();
+      checkNotesEmpty();
+    }, 1500);
+  })();
+
+  /* ==========================================
+     FIREBASE LISTENER CLEANUP
+     ========================================== */
+  window.addEventListener('beforeunload', function() {
+    if (firebaseReady) {
+      db.ref().off();
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
